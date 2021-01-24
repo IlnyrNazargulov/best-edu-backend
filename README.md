@@ -1,1 +1,1 @@
-# best-edu-backend
+# Api для сервисов best-edu
