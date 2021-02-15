@@ -13,11 +13,19 @@
 
 
     <dependencies>
+        <!--        Project runtime dependencies -->
+        <!--        Project dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dal</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--        Non-project dependencies -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

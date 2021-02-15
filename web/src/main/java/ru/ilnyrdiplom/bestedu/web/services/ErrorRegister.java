@@ -4,11 +4,11 @@ package ru.ilnyrdiplom.bestedu.web.services;
 import org.eclipse.jetty.http.BadMessageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.web.contracts.ErrorBody;
 import ru.ilnyrdiplom.bestedu.web.contracts.ErrorCodes;
 import ru.ilnyrdiplom.bestedu.web.exceptions.RefreshTokenExpiredException;
-
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -26,7 +26,8 @@ public class ErrorRegister {
                 (e) -> new ErrorBody(ErrorCodes.REFRESH_TOKEN_EXPIRED, "Refresh token is expired.", e, HttpStatus.UNAUTHORIZED));
         register(BadMessageException.class,
                 (e) -> new ErrorBody(ErrorCodes.BAD_HTTP_REQUEST, e.getCause().getMessage(), e, HttpStatus.BAD_REQUEST));
-
+        register(AccountLoginException.class,
+                (e) -> new ErrorBody(ErrorCodes.LOGIN_EXISTS, e.getMessage(), e, HttpStatus.BAD_REQUEST));
     }
 
     protected <T extends Exception> void register(Class<T> exceptionClass, Function<T, ErrorBody> converter) {

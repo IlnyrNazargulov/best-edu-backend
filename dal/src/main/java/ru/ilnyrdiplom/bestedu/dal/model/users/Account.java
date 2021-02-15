@@ -31,4 +31,13 @@ public abstract class Account implements AccountFacade {
     @Column(nullable = false)
     private String firstName;
     private String patronymic;
+
+    public Account(Instant createdAt, String login, String passwordHash, String secondName, String firstName, String patronymic) {
+        this.createdAt = createdAt;
+        this.login = login;
+        this.passwordHash = passwordHash;
+        this.secondName = secondName;
+        this.firstName = firstName;
+        this.patronymic = patronymic;
+    }
 }

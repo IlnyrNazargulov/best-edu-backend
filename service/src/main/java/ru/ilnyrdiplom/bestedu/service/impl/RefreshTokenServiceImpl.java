@@ -3,22 +3,47 @@ package ru.ilnyrdiplom.bestedu.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.ilnyrdiplom.bestedu.dal.model.RefreshToken;
+import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
+import ru.ilnyrdiplom.bestedu.dal.repositories.RefreshTokenRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.RefreshTokenLimitExceededException;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.RefreshTokenServiceFacade;
+import ru.ilnyrdiplom.bestedu.service.RefreshTokenProperties;
+import ru.ilnyrdiplom.bestedu.service.service.AccountService;
+import ru.ilnyrdiplom.bestedu.service.service.RandomService;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
 public class RefreshTokenServiceImpl implements RefreshTokenServiceFacade {
 
+    private final AccountService accountService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenProperties refreshTokenProperties;
+    private final RandomService randomService;
+
     @Override
-    public UUID claimToken(AccountIdentity accountIdentity, Instant now, Instant expiredAt) throws EntityNotFoundException, RefreshTokenLimitExceededException {
-        return null;
+    public UUID claimToken(@NonNull AccountIdentity accountIdentity, Instant now, Instant expiredAt) throws EntityNotFoundException, RefreshTokenLimitExceededException {
+        Account account = accountService.getAccount(accountIdentity);
+        Instant lastHour = now.minus(1L, ChronoUnit.HOURS);
+        int count = refreshTokenRepository.findCountForTime(account, lastHour);
+        if (count > refreshTokenProperties.getMaxTokensPerHour()) {
+            throw new RefreshTokenLimitExceededException(accountIdentity, refreshTokenProperties.getMaxTokensPerHour(), count);
+        }
+        RefreshToken refreshToken = new RefreshToken(
+                randomService.generateUUID(),
+                account,
+                now,
+                expiredAt
+        );
+        refreshTokenRepository.save(refreshToken);
+        return refreshToken.getToken();
     }
 
     @Override
