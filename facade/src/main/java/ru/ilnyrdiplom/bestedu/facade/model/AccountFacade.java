@@ -6,5 +6,4 @@ public interface AccountFacade {
     Integer getId();
 
     Role getRole();
-
 }
