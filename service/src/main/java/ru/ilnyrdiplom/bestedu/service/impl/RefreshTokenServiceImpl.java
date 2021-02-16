@@ -8,7 +8,6 @@ import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
 import ru.ilnyrdiplom.bestedu.dal.repositories.RefreshTokenRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.RefreshTokenLimitExceededException;
-import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.RefreshTokenServiceFacade;
 import ru.ilnyrdiplom.bestedu.service.RefreshTokenProperties;
@@ -47,17 +46,37 @@ public class RefreshTokenServiceImpl implements RefreshTokenServiceFacade {
     }
 
     @Override
-    public AccountFacade releaseToken(UUID token, Instant now) {
-        return null;
+    public Account releaseToken(UUID token, Instant now) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(token).orElse(null);
+        if (refreshToken == null) {
+            return null;
+        }
+
+        int affected = refreshTokenRepository.remove(refreshToken);
+        if (affected != 1) {
+            return null;
+        }
+
+        if (refreshToken.getExpiredAt().isBefore(now)) {
+            return null;
+        }
+
+        return refreshToken.getAccount();
     }
 
     @Override
     public void releaseOne(AccountIdentity accountIdentity, UUID token) throws EntityNotFoundException {
-
+        Account account = accountService.getAccount(accountIdentity);
+        RefreshToken refreshToken = refreshTokenRepository.findByAccountAndToken(account, token);
+        if (refreshToken == null) {
+            throw new EntityNotFoundException(token, RefreshToken.class);
+        }
+        refreshTokenRepository.remove(refreshToken);
     }
 
     @Override
     public void releaseAll(AccountIdentity targetIdentity, AccountIdentity currentIdentity) throws EntityNotFoundException {
-
+        Account target = accountService.getAccount(targetIdentity);
+        refreshTokenRepository.removeAllByAccount(target);
     }
 }
