@@ -12,6 +12,7 @@ import java.time.Duration;
 public class SecurityProperties {
     private Duration accessTokenTTL;
     private Duration refreshTokenTTL;
+    private Duration temporaryTokenTTL;
     private String signingKey;
     private String issuer;
 }

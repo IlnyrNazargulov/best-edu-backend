@@ -3,9 +3,11 @@ package ru.ilnyrdiplom.bestedu.web.services;
 
 import org.eclipse.jetty.http.BadMessageException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongRequestCodeException;
 import ru.ilnyrdiplom.bestedu.web.contracts.ErrorBody;
 import ru.ilnyrdiplom.bestedu.web.contracts.ErrorCodes;
 import ru.ilnyrdiplom.bestedu.web.exceptions.RefreshTokenExpiredException;
@@ -28,6 +30,11 @@ public class ErrorRegister {
                 (e) -> new ErrorBody(ErrorCodes.BAD_HTTP_REQUEST, e.getCause().getMessage(), e, HttpStatus.BAD_REQUEST));
         register(AccountLoginException.class,
                 (e) -> new ErrorBody(ErrorCodes.LOGIN_EXISTS, e.getMessage(), e, HttpStatus.BAD_REQUEST));
+        register(WrongRequestCodeException.class,
+                (e) -> new ErrorBody(ErrorCodes.INVALID_CODE, "Wrong code.", e, HttpStatus.BAD_REQUEST));
+        register(AccessDeniedException.class,
+                (e) -> new ErrorBody(ErrorCodes.ACCESS_DENIED, "The specified token does not grant access to the requested resource.", e, HttpStatus.FORBIDDEN));
+
     }
 
     protected <T extends Exception> void register(Class<T> exceptionClass, Function<T, ErrorBody> converter) {

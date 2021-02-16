@@ -7,4 +7,6 @@ import ru.ilnyrdiplom.bestedu.facade.model.requests.RegisterRequestFacade;
 public interface AccountServiceFacade {
 
     AccountTeacherFacade createAccountTeacher(RegisterRequestFacade registerRequestFacade) throws AccountLoginException;
+
+    void registerRequestCode(String email) throws AccountLoginException;
 }

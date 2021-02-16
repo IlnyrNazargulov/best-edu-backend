@@ -9,7 +9,7 @@ import ru.ilnyrdiplom.bestedu.dal.DalModule;
 
 @ComponentScan
 @Configuration
-@PropertySource("classpath:service.properties")
+@PropertySource(value = "classpath:service.properties", encoding = "UTF8")
 @ConfigurationPropertiesScan
 @Import({DalModule.class})
 public class ServiceModule {

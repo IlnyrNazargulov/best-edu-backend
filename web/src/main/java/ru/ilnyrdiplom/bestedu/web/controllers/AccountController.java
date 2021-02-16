@@ -30,16 +30,18 @@ public class AccountController {
     private final AccountServiceFacade accountService;
     private final RefreshTokenServiceFacade refreshTokenService;
 
-    @Secured(Role.ANONYMOUS)
+    @Secured(Role.EMAIL_VERIFIED)
     @PostMapping(value = "/teachers/register/")
-    public ResponseEntity<ApiResponse<AccountWithTokenResponse>> registerTeacher(@Validated @RequestBody RegisterRequest registerRequest) throws AccountLoginException {
+    public ResponseEntity<ApiResponse<AccountWithTokenResponse>> registerTeacher(@Validated @RequestBody RegisterRequest registerRequest)
+            throws AccountLoginException {
         AccountTeacherFacade account = accountService.createAccountTeacher(registerRequest);
         OAuth2AccessToken accessTokenByAccount = securityTokenService.createAccessTokenByAccount(account);
         return ApiResponse.success(new AccountWithTokenResponse(accessTokenByAccount, account));
     }
 
     @PostMapping("/current/refresh/")
-    public ResponseEntity<?> refreshToken(@Validated @RequestBody RefreshTokenRequest refreshTokenRequest) throws RefreshTokenExpiredException {
+    public ResponseEntity<ApiResponse<OAuth2AccessToken>> refreshToken(@Validated @RequestBody RefreshTokenRequest refreshTokenRequest)
+            throws RefreshTokenExpiredException {
         OAuth2AccessToken accessToken = securityTokenService.refreshAccessToken(refreshTokenRequest.getToken());
         return ApiResponse.success(accessToken);
     }

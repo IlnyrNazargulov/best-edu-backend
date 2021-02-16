@@ -51,6 +51,10 @@ public class SecurityTokenService {
         return Collections.singleton(new RoleAuthority(enumRole));
     }
 
+    public OAuth2AccessToken createAccessTokenByEmail(@NonNull final String email, @NonNull final Role role) {
+        Instant now = Instant.now();
+        return createSigned(now, email, toScope(role), securityProperties.getTemporaryTokenTTL());
+    }
 
     public OAuth2AccessToken createAccessTokenByAccount(@NonNull final AccountFacade account) {
         Instant now = Instant.now();
