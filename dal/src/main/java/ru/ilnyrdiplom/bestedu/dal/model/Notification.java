@@ -1,10 +1,10 @@
 package ru.ilnyrdiplom.bestedu.dal.model;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
+import ru.ilnyrdiplom.bestedu.facade.model.NotificationFacade;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -13,7 +13,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "notification")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notification {
+public class Notification implements NotificationFacade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

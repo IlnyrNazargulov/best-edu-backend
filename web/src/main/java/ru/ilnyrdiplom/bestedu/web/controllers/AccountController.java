@@ -108,7 +108,7 @@ public class AccountController {
 
     @Secured(Role.EMAIL_VERIFIED)
     @PostMapping(value = "/reset-password/")
-    public ResponseEntity<ApiResponse<AccountFacade>> resetPaswword(
+    public ResponseEntity<ApiResponse<AccountFacade>> resetPassword(
             @AuthenticationPrincipal String email,
             @Validated @RequestBody ChangePasswordRequest changePasswordRequest
     )

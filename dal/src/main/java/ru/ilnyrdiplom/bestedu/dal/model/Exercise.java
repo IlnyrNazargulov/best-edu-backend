@@ -1,9 +1,9 @@
 package ru.ilnyrdiplom.bestedu.dal.model;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFacade;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -12,7 +12,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "exercise")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Exercise {
+public class Exercise implements ExerciseFacade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
