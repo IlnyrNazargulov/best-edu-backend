@@ -1,9 +1,6 @@
 package ru.ilnyrdiplom.bestedu.dal.model.users;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 
 import javax.persistence.*;
@@ -24,6 +21,7 @@ public abstract class Account implements AccountFacade {
     private Instant createdAt;
     @Column(nullable = false)
     private String login;
+    @Setter
     @Column(nullable = false)
     private String passwordHash;
     @Column(nullable = false)
