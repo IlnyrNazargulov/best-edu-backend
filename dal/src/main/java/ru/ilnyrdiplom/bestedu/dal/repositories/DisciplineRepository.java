@@ -5,7 +5,7 @@ import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
 import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 
 public interface DisciplineRepository extends CrudRepository<Discipline, Integer> {
-    Discipline findDisciplineByNameAndTeacher(String name, AccountTeacher teacher);
+    Discipline findDisciplineByNameAndTeacherAndRemovedFalse(String name, AccountTeacher teacher);
 
-    Discipline findDisciplineByIdAndTeacher(int id, AccountTeacher teacher);
+    Discipline findDisciplineByIdAndTeacherAndRemovedFalse(int id, AccountTeacher teacher);
 }

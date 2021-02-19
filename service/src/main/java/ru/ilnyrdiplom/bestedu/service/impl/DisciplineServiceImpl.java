@@ -34,7 +34,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade {
         Instant now = Instant.now();
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
         Discipline existDiscipline = disciplineRepository
-                .findDisciplineByNameAndTeacher(name, accountTeacher);
+                .findDisciplineByNameAndTeacherAndRemovedFalse(name, accountTeacher);
         if (existDiscipline != null) {
             throw new DisciplineAlreadyExistsException(name, accountIdentity);
         }
@@ -65,10 +65,20 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade {
         return discipline;
     }
 
+    @Override
+    @Transactional
+    public Discipline deleteDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+            throws EntityNotFoundException {
+        AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
+        Discipline discipline = getDisciplineByTeacher(accountTeacher, disciplineIdentity);
+        discipline.setRemoved(true);
+        return discipline;
+    }
+
     private Discipline getDisciplineByTeacher(AccountTeacher accountTeacher, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException {
         Discipline discipline = disciplineRepository
-                .findDisciplineByIdAndTeacher(disciplineIdentity.getId(), accountTeacher);
+                .findDisciplineByIdAndTeacherAndRemovedFalse(disciplineIdentity.getId(), accountTeacher);
         if (discipline == null) {
             throw new EntityNotFoundException(disciplineIdentity, Discipline.class);
         }

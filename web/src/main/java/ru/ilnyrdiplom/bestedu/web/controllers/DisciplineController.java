@@ -55,4 +55,14 @@ public class DisciplineController {
                 .getDiscipline(tokenPrincipal.getAccountIdentity(), () -> disciplineId);
         return ApiResponse.success(discipline);
     }
+
+    @Secured(Role.TEACHER)
+    @DeleteMapping("/{disciplineId}/")
+    public ResponseEntity<ApiResponse<DisciplineFacade>> deleteDiscipline(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+                                                                          @PathVariable int disciplineId
+    ) throws EntityNotFoundException {
+        DisciplineFacade discipline = disciplineService
+                .deleteDiscipline(tokenPrincipal.getAccountIdentity(), () -> disciplineId);
+        return ApiResponse.success(discipline);
+    }
 }

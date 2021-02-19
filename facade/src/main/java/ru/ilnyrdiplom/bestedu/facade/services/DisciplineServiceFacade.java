@@ -15,6 +15,9 @@ public interface DisciplineServiceFacade {
     DisciplineFacade updateDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity, String name)
             throws EntityNotFoundException;
 
+    DisciplineFacade deleteDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+            throws EntityNotFoundException;
+
     DisciplineFacade getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
 }

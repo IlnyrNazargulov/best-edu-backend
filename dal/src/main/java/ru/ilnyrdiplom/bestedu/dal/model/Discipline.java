@@ -26,6 +26,7 @@ public class Discipline implements DisciplineFacade {
     @Setter
     @Column(nullable = false)
     private String name;
+    @Setter
     private boolean isRemoved = false;
     private boolean isPublic;
 
