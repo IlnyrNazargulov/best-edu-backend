@@ -25,6 +25,7 @@ CREATE TABLE discipline
     name       VARCHAR(255)                NOT NULL,
     created_at TIMESTAMP                   NOT NULL,
     is_removed BOOLEAN                     NOT NULL,
+    is_public  BOOLEAN                     NOT NULL,
     teacher_id INT REFERENCES account (id) NOT NULL,
     UNIQUE (name, teacher_id)
 );

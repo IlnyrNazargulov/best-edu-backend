@@ -8,6 +8,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
 import ru.ilnyrdiplom.bestedu.facade.model.DisciplineFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
@@ -28,7 +30,7 @@ public class DisciplineController {
                                                                        @RequestBody DisciplineRequest disciplineRequest
     ) throws DisciplineAlreadyExistsException, EntityNotFoundException {
         DisciplineFacade discipline = disciplineService
-                .createDiscipline(tokenPrincipal.getAccountIdentity(), disciplineRequest.getName());
+                .createDiscipline(tokenPrincipal.getAccountIdentity(), disciplineRequest.getName(), disciplineRequest.isPublic());
         return ApiResponse.success(discipline);
     }
 
@@ -43,14 +45,14 @@ public class DisciplineController {
         return ApiResponse.success(discipline);
     }
 
-    @Secured({Role.TEACHER})
+    @Secured({Role.TEACHER, Role.STUDENT})
     @GetMapping("/{disciplineId}/")
-    public ResponseEntity<ApiResponse<DisciplineFacade>> getDiscipline(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-                                                                       @PathVariable int disciplineId
-    ) throws EntityNotFoundException {
+    public ResponseEntity<ApiResponse<DisciplineFacade>> getDiscipline(
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+            @PathVariable int disciplineId
+    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException {
         DisciplineFacade discipline = disciplineService
                 .getDiscipline(tokenPrincipal.getAccountIdentity(), () -> disciplineId);
         return ApiResponse.success(discipline);
     }
-
 }

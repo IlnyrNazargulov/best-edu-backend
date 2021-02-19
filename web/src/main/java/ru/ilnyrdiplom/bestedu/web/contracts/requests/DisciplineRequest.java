@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class DisciplineRequest {
     private String name;
+    private boolean isPublic;
 }

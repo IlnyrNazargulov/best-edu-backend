@@ -24,4 +24,11 @@ public class RefreshToken {
     private Instant createdAt;
     @Column(updatable = false, nullable = false)
     private Instant expiredAt;
+
+    public RefreshToken(UUID token, Account account, Instant createdAt, Instant expiredAt) {
+        this.token = token;
+        this.account = account;
+        this.createdAt = createdAt;
+        this.expiredAt = expiredAt;
+    }
 }

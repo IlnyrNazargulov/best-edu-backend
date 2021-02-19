@@ -27,10 +27,12 @@ public class Discipline implements DisciplineFacade {
     @Column(nullable = false)
     private String name;
     private boolean isRemoved = false;
+    private boolean isPublic;
 
-    public Discipline(AccountTeacher teacher, Instant createdAt, String name) {
+    public Discipline(AccountTeacher teacher, Instant createdAt, String name, boolean isPublic) {
         this.teacher = teacher;
         this.createdAt = createdAt;
         this.name = name;
+        this.isPublic = isPublic;
     }
 }

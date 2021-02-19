@@ -3,11 +3,17 @@ package ru.ilnyrdiplom.bestedu.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ilnyrdiplom.bestedu.dal.model.AccessDiscipline;
 import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
+import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
+import ru.ilnyrdiplom.bestedu.dal.model.users.AccountStudent;
 import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
+import ru.ilnyrdiplom.bestedu.dal.repositories.AccessDisciplineRepository;
 import ru.ilnyrdiplom.bestedu.dal.repositories.DisciplineRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
@@ -20,9 +26,10 @@ import java.time.Instant;
 public class DisciplineServiceImpl implements DisciplineServiceFacade {
     private final AccountService accountService;
     private final DisciplineRepository disciplineRepository;
+    private final AccessDisciplineRepository accessDisciplineRepository;
 
     @Override
-    public Discipline createDiscipline(AccountIdentity accountIdentity, String name)
+    public Discipline createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic)
             throws EntityNotFoundException, DisciplineAlreadyExistsException {
         Instant now = Instant.now();
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
@@ -31,14 +38,35 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade {
         if (existDiscipline != null) {
             throw new DisciplineAlreadyExistsException(name, accountIdentity);
         }
-        Discipline discipline = new Discipline(accountTeacher, now, name);
+        Discipline discipline = new Discipline(accountTeacher, now, name, isPublic);
         return disciplineRepository.save(discipline);
     }
 
     @Override
     public Discipline getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
+        Account account = accountService.getAccount(accountIdentity);
+        if (account instanceof AccountTeacher) {
+            return getDisciplineByTeacher((AccountTeacher) account, disciplineIdentity);
+        }
+        if (account instanceof AccountStudent) {
+            return getDisciplineByStudent((AccountStudent) account, disciplineIdentity);
+        }
+        throw new WrongAccountTypeException();
+    }
+
+    @Override
+    @Transactional
+    public Discipline updateDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity, String newName)
             throws EntityNotFoundException {
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
+        Discipline discipline = getDisciplineByTeacher(accountTeacher, disciplineIdentity);
+        discipline.setName(newName);
+        return discipline;
+    }
+
+    private Discipline getDisciplineByTeacher(AccountTeacher accountTeacher, DisciplineIdentity disciplineIdentity)
+            throws EntityNotFoundException {
         Discipline discipline = disciplineRepository
                 .findDisciplineByIdAndTeacher(disciplineIdentity.getId(), accountTeacher);
         if (discipline == null) {
@@ -47,13 +75,21 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade {
         return discipline;
     }
 
-    @Override
-    @Transactional
-    public Discipline updateDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity, String newName)
-            throws EntityNotFoundException {
-        Discipline discipline = getDiscipline(accountIdentity, disciplineIdentity);
-        discipline.setName(newName);
+    private Discipline getDisciplineByStudent(
+            AccountStudent accountStudent,
+            DisciplineIdentity disciplineIdentity
+    )
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException {
+        Discipline discipline = disciplineRepository.findById(disciplineIdentity.getId())
+                .orElseThrow(() -> new EntityNotFoundException(disciplineIdentity, Discipline.class));
+        if (discipline.isPublic()) {
+            return discipline;
+        }
+        AccessDiscipline accessDiscipline = accessDisciplineRepository
+                .findAccessDisciplineByDisciplineAndStudent(discipline, accountStudent);
+        if (accessDiscipline == null) {
+            throw new ImpossibleAccessDisciplineException(disciplineIdentity, accountStudent::getId);
+        }
         return discipline;
     }
-
 }
