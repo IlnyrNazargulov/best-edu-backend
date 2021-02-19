@@ -10,7 +10,7 @@ import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.RefreshTokenLimitExceededException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.RefreshTokenServiceFacade;
-import ru.ilnyrdiplom.bestedu.service.RefreshTokenProperties;
+import ru.ilnyrdiplom.bestedu.service.config.RefreshTokenProperties;
 import ru.ilnyrdiplom.bestedu.service.service.AccountService;
 import ru.ilnyrdiplom.bestedu.service.service.RandomService;
 

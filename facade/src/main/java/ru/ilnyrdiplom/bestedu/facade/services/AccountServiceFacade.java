@@ -6,6 +6,7 @@ import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongCredentialsException;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountStudentFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountTeacherFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.RequestCodeStatusFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.UpdateAccountRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.RegisterRequestFacade;
@@ -16,7 +17,7 @@ public interface AccountServiceFacade {
 
     AccountStudentFacade createAccountStudent(RegisterRequestFacade registerRequestFacade) throws AccountLoginException;
 
-    void registerRequestCode(String email) throws AccountLoginException;
+    RequestCodeStatusFacade registerRequestCode(String email) throws AccountLoginException;
 
     AccountFacade resetPassword(String email, String newPassword) throws EntityNotFoundException;
 

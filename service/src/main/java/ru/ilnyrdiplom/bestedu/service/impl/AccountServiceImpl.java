@@ -11,6 +11,7 @@ import ru.ilnyrdiplom.bestedu.dal.repositories.AccountRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongCredentialsException;
+import ru.ilnyrdiplom.bestedu.facade.model.RequestCodeStatusFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.RegisterRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.UpdateAccountRequestFacade;
@@ -20,6 +21,7 @@ import ru.ilnyrdiplom.bestedu.service.service.EmailService;
 import ru.ilnyrdiplom.bestedu.service.service.RequestCodeService;
 
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @RequiredArgsConstructor
@@ -109,14 +111,19 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     }
 
     @Override
-    public void registerRequestCode(String email) throws AccountLoginException {
+    public RequestCodeStatusFacade registerRequestCode(String email) throws AccountLoginException {
         Instant now = Instant.now();
         Account existAccount = accountRepository.findAccountByLogin(email);
         if (existAccount != null) {
             throw new AccountLoginException(email);
         }
         RequestCode requestCode = requestCodeService.create(email, now);
+        RequestCodeStatusFacade requestCodeStatus = requestCodeService.tryRequestNewCodeOrGetExisting(requestCode);
+        if (!requestCodeStatus.isCodeSent()) {
+            return requestCodeStatus;
+        }
         verificationEmailService.sendVerifyMessage(email, requestCode.getCode());
+        return requestCodeStatus;
     }
 
     @Override

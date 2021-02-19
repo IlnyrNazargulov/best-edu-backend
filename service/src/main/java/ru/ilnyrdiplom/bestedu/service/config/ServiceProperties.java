@@ -1,4 +1,4 @@
-package ru.ilnyrdiplom.bestedu.service;
+package ru.ilnyrdiplom.bestedu.service.config;
 
 import lombok.Getter;
 import lombok.Setter;

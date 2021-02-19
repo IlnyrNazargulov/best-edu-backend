@@ -2,7 +2,7 @@ package ru.ilnyrdiplom.bestedu.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.ilnyrdiplom.bestedu.service.EmailProperties;
+import ru.ilnyrdiplom.bestedu.service.config.EmailProperties;
 import ru.ilnyrdiplom.bestedu.service.service.EmailService;
 import ru.ilnyrdiplom.bestedu.service.service.MailSenderService;
 

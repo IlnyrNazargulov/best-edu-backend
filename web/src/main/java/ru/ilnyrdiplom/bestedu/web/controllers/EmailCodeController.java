@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongRequestCodeException;
+import ru.ilnyrdiplom.bestedu.facade.model.RequestCodeStatusFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 import ru.ilnyrdiplom.bestedu.facade.services.AccountServiceFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.RequestCodeServiceFacade;
 import ru.ilnyrdiplom.bestedu.web.contracts.requests.EmailCodeRequest;
 import ru.ilnyrdiplom.bestedu.web.contracts.requests.VerifyEmailRequest;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.ApiResponse;
+import ru.ilnyrdiplom.bestedu.web.contracts.responses.RequestCodeResponse;
 import ru.ilnyrdiplom.bestedu.web.services.SecurityTokenService;
 
 @RestController
@@ -30,11 +32,17 @@ public class EmailCodeController {
     private final AccountServiceFacade accountService;
 
     @PostMapping(value = "/accounts/request-code/")
-    public ResponseEntity<?> registerRequestCode(
+    public ResponseEntity<ApiResponse<RequestCodeResponse>> registerRequestCode(
             @Validated @RequestBody VerifyEmailRequest verifyEmailRequest
     ) throws AccountLoginException {
-        accountService.registerRequestCode(verifyEmailRequest.getEmail());
-        return ApiResponse.success();
+        RequestCodeStatusFacade requestCodeStatus = accountService.registerRequestCode(verifyEmailRequest.getEmail());
+        RequestCodeResponse requestCodeResponse = new RequestCodeResponse(requestCodeStatus.getNextAttemptAfter());
+        if (requestCodeStatus.isCodeSent()) {
+            return ApiResponse.success(requestCodeResponse);
+        }
+        else {
+            return ApiResponse.failure(requestCodeResponse);
+        }
     }
 
     @PostMapping(value = "/accounts/verify-code/")
