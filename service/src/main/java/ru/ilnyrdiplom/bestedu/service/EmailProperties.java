@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties("ru.ilnyrdiplom.bestedu.email")
 public class EmailProperties {
-    private String addressee;
-    private String template;
-    private String subject;
+    private String serviceEmail;
+    private String templateValidationEmail;
+    private String subjectValidationEmail;
 }

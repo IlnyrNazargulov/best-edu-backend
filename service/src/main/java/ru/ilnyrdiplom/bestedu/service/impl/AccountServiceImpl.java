@@ -12,8 +12,8 @@ import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.RegisterRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.AccountServiceFacade;
 import ru.ilnyrdiplom.bestedu.service.service.AccountService;
+import ru.ilnyrdiplom.bestedu.service.service.EmailService;
 import ru.ilnyrdiplom.bestedu.service.service.RequestCodeService;
-import ru.ilnyrdiplom.bestedu.service.service.VerificationEmailService;
 
 import java.time.Instant;
 
@@ -23,7 +23,7 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
 
     private final AccountRepository accountRepository;
     private final PasswordService passwordService;
-    private final VerificationEmailService verificationEmailService;
+    private final EmailService verificationEmailService;
     private final RequestCodeService requestCodeService;
 
     @Override

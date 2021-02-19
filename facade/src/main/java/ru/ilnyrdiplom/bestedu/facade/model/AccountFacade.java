@@ -16,4 +16,6 @@ public interface AccountFacade {
     String getPatronymic();
 
     Instant getCreatedAt();
+
+    String getLogin();
 }
