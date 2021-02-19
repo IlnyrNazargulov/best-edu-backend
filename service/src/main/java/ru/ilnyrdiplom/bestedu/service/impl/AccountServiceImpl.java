@@ -89,6 +89,16 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     }
 
     @Override
+    public AccountTeacher getAccountTeacher(AccountIdentity accountIdentity) throws EntityNotFoundException {
+        Account account = accountRepository.findById(accountIdentity.getId())
+                .orElseThrow(() -> new EntityNotFoundException(accountIdentity, Account.class));
+        if (!(account instanceof AccountTeacher)) {
+            throw new EntityNotFoundException(accountIdentity, AccountTeacher.class);
+        }
+        return (AccountTeacher) account;
+    }
+
+    @Override
     public void registerRequestCode(String email) throws AccountLoginException {
         Instant now = Instant.now();
         Account existAccount = accountRepository.findAccountByLogin(email);

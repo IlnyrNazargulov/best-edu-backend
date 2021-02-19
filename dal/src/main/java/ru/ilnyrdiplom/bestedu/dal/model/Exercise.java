@@ -11,7 +11,6 @@ import java.time.Instant;
 @Getter
 @Entity
 @Table(name = "exercise")
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Exercise {
     @Id

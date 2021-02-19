@@ -13,7 +13,6 @@ import java.time.Instant;
 @Getter
 @Entity
 @Table(name = "access_discipline")
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AccessDiscipline {
     @Id

@@ -12,7 +12,6 @@ import java.time.Instant;
 @Getter
 @Entity
 @Table(name = "comment")
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
     @Id

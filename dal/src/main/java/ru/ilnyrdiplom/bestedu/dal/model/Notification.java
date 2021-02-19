@@ -12,7 +12,6 @@ import java.time.Instant;
 @Getter
 @Entity
 @Table(name = "notification")
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification {
     @Id
