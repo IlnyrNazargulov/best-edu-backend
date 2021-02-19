@@ -6,6 +6,7 @@ import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountStudentFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountTeacherFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
+import ru.ilnyrdiplom.bestedu.facade.model.requests.ChangeUserInfoRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.RegisterRequestFacade;
 
 public interface AccountServiceFacade {
@@ -19,4 +20,7 @@ public interface AccountServiceFacade {
     AccountFacade resetPassword(String email, String newPassword) throws EntityNotFoundException;
 
     AccountFacade changePassword(AccountIdentity accountIdentity, String newPassword) throws EntityNotFoundException;
+
+    AccountFacade changeUserInfo(AccountIdentity accountIdentity, ChangeUserInfoRequestFacade changeUserInfoRequest)
+            throws EntityNotFoundException;
 }

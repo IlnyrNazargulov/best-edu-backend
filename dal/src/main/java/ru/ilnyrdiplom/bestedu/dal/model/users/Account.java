@@ -24,10 +24,13 @@ public abstract class Account implements AccountFacade {
     @Setter
     @Column(nullable = false)
     private String passwordHash;
+    @Setter
     @Column(nullable = false)
     private String secondName;
+    @Setter
     @Column(nullable = false)
     private String firstName;
+    @Setter
     private String patronymic;
 
     public Account(Instant createdAt, String login, String passwordHash, String secondName, String firstName, String patronymic) {

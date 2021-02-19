@@ -34,7 +34,6 @@ public class ErrorRegister {
                 (e) -> new ErrorBody(ErrorCodes.INVALID_CODE, "Wrong code.", e, HttpStatus.BAD_REQUEST));
         register(AccessDeniedException.class,
                 (e) -> new ErrorBody(ErrorCodes.ACCESS_DENIED, "The specified token does not grant access to the requested resource.", e, HttpStatus.FORBIDDEN));
-
     }
 
     protected <T extends Exception> void register(Class<T> exceptionClass, Function<T, ErrorBody> converter) {

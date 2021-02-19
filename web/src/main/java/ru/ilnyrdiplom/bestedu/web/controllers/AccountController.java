@@ -17,6 +17,7 @@ import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 import ru.ilnyrdiplom.bestedu.facade.services.AccountServiceFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.RefreshTokenServiceFacade;
 import ru.ilnyrdiplom.bestedu.web.contracts.requests.ChangePasswordRequest;
+import ru.ilnyrdiplom.bestedu.web.contracts.requests.ChangeUserInfoRequest;
 import ru.ilnyrdiplom.bestedu.web.contracts.requests.RefreshTokenRequest;
 import ru.ilnyrdiplom.bestedu.web.contracts.requests.RegisterRequest;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.AccountWithTokenResponse;
@@ -90,7 +91,7 @@ public class AccountController {
     }
 
     @Secured({Role.TEACHER, Role.STUDENT})
-    @PostMapping(value = "/change-password/")
+    @PostMapping(value = "/current/change-password/")
     public ResponseEntity<ApiResponse<AccountFacade>> changePassword(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @Validated @RequestBody ChangePasswordRequest changePasswordRequest
@@ -98,6 +99,17 @@ public class AccountController {
             throws EntityNotFoundException {
         AccountFacade account = accountService
                 .changePassword(tokenPrincipal.getAccountIdentity(), changePasswordRequest.getPassword());
+        return ApiResponse.success(account);
+    }
+
+    @Secured({Role.TEACHER, Role.STUDENT})
+    @PostMapping(value = "/current/user-info/")
+    public ResponseEntity<ApiResponse<AccountFacade>> changeUserInfo(
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+            @Validated @RequestBody ChangeUserInfoRequest changeUserInfoRequest
+    )
+            throws EntityNotFoundException {
+        AccountFacade account = accountService.changeUserInfo(tokenPrincipal.getAccountIdentity(), changeUserInfoRequest);
         return ApiResponse.success(account);
     }
 }

@@ -11,6 +11,7 @@ import ru.ilnyrdiplom.bestedu.dal.repositories.AccountRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
+import ru.ilnyrdiplom.bestedu.facade.model.requests.ChangeUserInfoRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.RegisterRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.AccountServiceFacade;
 import ru.ilnyrdiplom.bestedu.service.service.AccountService;
@@ -98,10 +99,20 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     @Override
     @Transactional
     public Account changePassword(AccountIdentity accountIdentity, String newPassword) throws EntityNotFoundException {
-        Account existAccount = accountRepository.findById(accountIdentity.getId())
-                .orElseThrow(() -> new EntityNotFoundException(accountIdentity, Account.class));
+        Account existAccount = getAccount(accountIdentity);
         String newHashPassword = passwordService.hashPassword(newPassword);
         existAccount.setPasswordHash(newHashPassword);
+        return existAccount;
+    }
+
+    @Override
+    @Transactional
+    public Account changeUserInfo(AccountIdentity accountIdentity, ChangeUserInfoRequestFacade changeUserInfoRequest)
+            throws EntityNotFoundException {
+        Account existAccount = getAccount(accountIdentity);
+        existAccount.setSecondName(changeUserInfoRequest.getSecondName());
+        existAccount.setPatronymic(changeUserInfoRequest.getPatronymic());
+        existAccount.setFirstName(changeUserInfoRequest.getFirstName());
         return existAccount;
     }
 }
