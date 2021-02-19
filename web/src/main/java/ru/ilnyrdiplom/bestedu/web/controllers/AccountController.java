@@ -10,16 +10,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongCredentialsException;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountStudentFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountTeacherFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 import ru.ilnyrdiplom.bestedu.facade.services.AccountServiceFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.RefreshTokenServiceFacade;
-import ru.ilnyrdiplom.bestedu.web.contracts.requests.ChangePasswordRequest;
-import ru.ilnyrdiplom.bestedu.web.contracts.requests.ChangeUserInfoRequest;
-import ru.ilnyrdiplom.bestedu.web.contracts.requests.RefreshTokenRequest;
-import ru.ilnyrdiplom.bestedu.web.contracts.requests.RegisterRequest;
+import ru.ilnyrdiplom.bestedu.web.contracts.requests.*;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.AccountWithTokenResponse;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.ApiResponse;
 import ru.ilnyrdiplom.bestedu.web.exceptions.RefreshTokenExpiredException;
@@ -33,6 +31,35 @@ public class AccountController {
     private final SecurityTokenService securityTokenService;
     private final AccountServiceFacade accountService;
     private final RefreshTokenServiceFacade refreshTokenService;
+
+    @Secured(Role.ANONYMOUS)
+    @PostMapping(value = "/login/")
+    public ResponseEntity<ApiResponse<AccountWithTokenResponse>> login(
+            @Validated @RequestBody LoginRequest loginRequest
+    )
+            throws AccountLoginException, WrongCredentialsException {
+        AccountFacade account = accountService.getByCredentials(loginRequest.getLogin(), loginRequest.getPlainPassword());
+        OAuth2AccessToken accessTokenByAccount = securityTokenService.createAccessTokenByAccount(account);
+        return ApiResponse.success(new AccountWithTokenResponse(accessTokenByAccount, account));
+    }
+
+    @Secured({Role.TEACHER, Role.STUDENT})
+    @GetMapping("/current/")
+    public ResponseEntity<?> getCurrent(@AuthenticationPrincipal TokenPrincipal tokenPrincipal) throws EntityNotFoundException {
+        AccountFacade account = accountService.getAccount(tokenPrincipal.getAccountIdentity());
+        return ApiResponse.success(account);
+    }
+
+    @Secured({Role.TEACHER, Role.STUDENT})
+    @PutMapping(value = "/current/")
+    public ResponseEntity<ApiResponse<AccountFacade>> updateAccount(
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+            @Validated @RequestBody UpdateAccountRequest updateAccountRequest
+    )
+            throws EntityNotFoundException {
+        AccountFacade account = accountService.updateAccount(tokenPrincipal.getAccountIdentity(), updateAccountRequest);
+        return ApiResponse.success(account);
+    }
 
     @Secured(Role.EMAIL_VERIFIED)
     @PostMapping(value = "/teachers/register/")
@@ -99,17 +126,6 @@ public class AccountController {
             throws EntityNotFoundException {
         AccountFacade account = accountService
                 .changePassword(tokenPrincipal.getAccountIdentity(), changePasswordRequest.getPassword());
-        return ApiResponse.success(account);
-    }
-
-    @Secured({Role.TEACHER, Role.STUDENT})
-    @PostMapping(value = "/current/user-info/")
-    public ResponseEntity<ApiResponse<AccountFacade>> changeUserInfo(
-            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @Validated @RequestBody ChangeUserInfoRequest changeUserInfoRequest
-    )
-            throws EntityNotFoundException {
-        AccountFacade account = accountService.changeUserInfo(tokenPrincipal.getAccountIdentity(), changeUserInfoRequest);
         return ApiResponse.success(account);
     }
 }

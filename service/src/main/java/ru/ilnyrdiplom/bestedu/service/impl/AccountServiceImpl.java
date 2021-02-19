@@ -10,9 +10,10 @@ import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 import ru.ilnyrdiplom.bestedu.dal.repositories.AccountRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongCredentialsException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
-import ru.ilnyrdiplom.bestedu.facade.model.requests.ChangeUserInfoRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.RegisterRequestFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.requests.UpdateAccountRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.AccountServiceFacade;
 import ru.ilnyrdiplom.bestedu.service.service.AccountService;
 import ru.ilnyrdiplom.bestedu.service.service.EmailService;
@@ -28,6 +29,20 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     private final PasswordService passwordService;
     private final EmailService verificationEmailService;
     private final RequestCodeService requestCodeService;
+
+    @Override
+    public Account getByCredentials(String email, String plainPassword) throws WrongCredentialsException {
+        Account existAccount = accountRepository.findAccountByLogin(email);
+        if (existAccount == null) {
+            throw new WrongCredentialsException(email);
+        }
+        if (passwordService.comparePassword(plainPassword, existAccount.getPasswordHash())) {
+            return existAccount;
+        }
+        else {
+            throw new WrongCredentialsException(email, true);
+        }
+    }
 
     @Override
     public AccountTeacher createAccountTeacher(RegisterRequestFacade registerRequestFacade) throws AccountLoginException {
@@ -107,7 +122,7 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
 
     @Override
     @Transactional
-    public Account changeUserInfo(AccountIdentity accountIdentity, ChangeUserInfoRequestFacade changeUserInfoRequest)
+    public Account updateAccount(AccountIdentity accountIdentity, UpdateAccountRequestFacade changeUserInfoRequest)
             throws EntityNotFoundException {
         Account existAccount = getAccount(accountIdentity);
         existAccount.setSecondName(changeUserInfoRequest.getSecondName());

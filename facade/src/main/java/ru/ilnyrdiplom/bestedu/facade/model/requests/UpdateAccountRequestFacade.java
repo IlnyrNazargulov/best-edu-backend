@@ -1,6 +1,6 @@
 package ru.ilnyrdiplom.bestedu.facade.model.requests;
 
-public interface ChangeUserInfoRequestFacade {
+public interface UpdateAccountRequestFacade {
     String getSecondName();
 
     String getFirstName();

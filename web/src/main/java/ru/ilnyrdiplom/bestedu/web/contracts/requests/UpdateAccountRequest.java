@@ -2,14 +2,14 @@ package ru.ilnyrdiplom.bestedu.web.contracts.requests;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.ilnyrdiplom.bestedu.facade.model.requests.ChangeUserInfoRequestFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.requests.UpdateAccountRequestFacade;
 
 import javax.validation.constraints.NotBlank;
 
 
 @Setter
 @Getter
-public class ChangeUserInfoRequest implements ChangeUserInfoRequestFacade {
+public class UpdateAccountRequest implements UpdateAccountRequestFacade {
     @NotBlank
     private String secondName;
     @NotBlank
