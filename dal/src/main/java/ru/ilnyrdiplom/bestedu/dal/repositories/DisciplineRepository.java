@@ -20,5 +20,5 @@ public interface DisciplineRepository extends CrudRepository<Discipline, Integer
             "and (:teacherFullName is null " +
             "or lower(teacher.secondName || ' ' || teacher.firstName || ' ' || teacher.patronymic) like lower(cast(concat('%', :teacherFullName, '%') as text))) " +
             "and (di.isPublic = true or exists(select ad from AccessDiscipline ad where ad.discipline = di and ad.student = :currentAccount))")
-    List<Discipline> findDisciplineByFilter(Account currentAccount, AccountTeacher teacher, String teacherFullName, String nameDiscipline);
+    List<Discipline> findDisciplines(Account currentAccount, AccountTeacher teacher, String teacherFullName, String nameDiscipline);
 }

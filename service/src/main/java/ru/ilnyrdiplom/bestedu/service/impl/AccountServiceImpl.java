@@ -1,6 +1,7 @@
 package ru.ilnyrdiplom.bestedu.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ilnyrdiplom.bestedu.dal.model.RequestCode;
@@ -21,6 +22,7 @@ import ru.ilnyrdiplom.bestedu.service.service.EmailService;
 import ru.ilnyrdiplom.bestedu.service.service.RequestCodeService;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -87,6 +89,11 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     public Account getAccount(AccountIdentity accountIdentity) throws EntityNotFoundException {
         return accountRepository.findById(accountIdentity.getId())
                 .orElseThrow(() -> new EntityNotFoundException(accountIdentity, Account.class));
+    }
+
+    @Override
+    public List<Account> getAccountTeachers(String fullName, Pageable pageable) {
+        return accountRepository.findAccounts(fullName, pageable);
     }
 
     @Override

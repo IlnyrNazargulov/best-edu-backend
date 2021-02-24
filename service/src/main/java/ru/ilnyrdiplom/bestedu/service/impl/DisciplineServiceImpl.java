@@ -56,7 +56,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         if (teacherIdentity.getId() != null) {
             teacher = accountService.getAccountTeacher(teacherIdentity);
         }
-        return disciplineRepository.findDisciplineByFilter(account, teacher, teacherFullName, nameDiscipline);
+        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline);
     }
 
     @Override

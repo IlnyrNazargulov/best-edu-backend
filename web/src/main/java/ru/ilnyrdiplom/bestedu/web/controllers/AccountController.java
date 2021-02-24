@@ -1,6 +1,7 @@
 package ru.ilnyrdiplom.bestedu.web.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -24,6 +25,8 @@ import ru.ilnyrdiplom.bestedu.web.exceptions.RefreshTokenExpiredException;
 import ru.ilnyrdiplom.bestedu.web.model.TokenPrincipal;
 import ru.ilnyrdiplom.bestedu.web.services.SecurityTokenService;
 
+import java.util.List;
+
 @RequestMapping(value = "/accounts/", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 @RequiredArgsConstructor
@@ -37,10 +40,27 @@ public class AccountController {
     public ResponseEntity<ApiResponse<AccountWithTokenResponse>> login(
             @Validated @RequestBody LoginRequest loginRequest
     )
-            throws AccountLoginException, WrongCredentialsException {
+            throws WrongCredentialsException {
         AccountFacade account = accountService.getByCredentials(loginRequest.getLogin(), loginRequest.getPlainPassword());
         OAuth2AccessToken accessTokenByAccount = securityTokenService.createAccessTokenByAccount(account);
         return ApiResponse.success(new AccountWithTokenResponse(accessTokenByAccount, account));
+    }
+
+    @Secured({Role.TEACHER, Role.STUDENT})
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<? extends AccountFacade>>> getAccountTeacher(
+            @RequestParam String fullName,
+            Pageable pageable
+    ) {
+        List<? extends AccountFacade> accounts = accountService.getAccountTeachers(fullName, pageable);
+        return ApiResponse.success(accounts);
+    }
+
+    @Secured({Role.TEACHER, Role.STUDENT})
+    @GetMapping("/{teacherId}/")
+    public ResponseEntity<?> getAccountTeacher(@PathVariable int teacherId) throws EntityNotFoundException {
+        AccountFacade account = accountService.getAccount(() -> teacherId);
+        return ApiResponse.success(account);
     }
 
     @Secured({Role.TEACHER, Role.STUDENT})
