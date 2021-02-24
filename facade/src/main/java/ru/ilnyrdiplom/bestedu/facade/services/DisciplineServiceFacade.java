@@ -8,6 +8,8 @@ import ru.ilnyrdiplom.bestedu.facade.model.DisciplineFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 
+import java.util.List;
+
 public interface DisciplineServiceFacade {
     DisciplineFacade createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic)
             throws EntityNotFoundException, DisciplineAlreadyExistsException;
@@ -20,4 +22,12 @@ public interface DisciplineServiceFacade {
 
     DisciplineFacade getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
+
+    List<? extends DisciplineFacade> getDisciplines(
+            AccountIdentity accountIdentity,
+            AccountIdentity teacherIdentity,
+            String teacherFullName,
+            String nameDiscipline
+    ) throws EntityNotFoundException;
+
 }

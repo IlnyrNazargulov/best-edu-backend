@@ -21,6 +21,7 @@ import ru.ilnyrdiplom.bestedu.service.service.AccountService;
 import ru.ilnyrdiplom.bestedu.service.service.DisciplineService;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -41,6 +42,21 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         }
         Discipline discipline = new Discipline(accountTeacher, now, name, isPublic);
         return disciplineRepository.save(discipline);
+    }
+
+    @Override
+    public List<Discipline> getDisciplines(
+            AccountIdentity accountIdentity,
+            AccountIdentity teacherIdentity,
+            String teacherFullName,
+            String nameDiscipline
+    ) throws EntityNotFoundException {
+        Account account = accountService.getAccount(accountIdentity);
+        AccountTeacher teacher = null;
+        if (teacherIdentity.getId() != null) {
+            teacher = accountService.getAccountTeacher(teacherIdentity);
+        }
+        return disciplineRepository.findDisciplineByFilter(account, teacher, teacherFullName, nameDiscipline);
     }
 
     @Override

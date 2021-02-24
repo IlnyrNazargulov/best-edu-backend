@@ -17,6 +17,8 @@ import ru.ilnyrdiplom.bestedu.web.contracts.requests.DisciplineRequest;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.ApiResponse;
 import ru.ilnyrdiplom.bestedu.web.model.TokenPrincipal;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/disciplines/", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -43,6 +45,20 @@ public class DisciplineController {
         DisciplineFacade discipline = disciplineService
                 .updateDiscipline(tokenPrincipal.getAccountIdentity(), () -> disciplineId, disciplineRequest.getName());
         return ApiResponse.success(discipline);
+    }
+
+    @Secured({Role.TEACHER, Role.STUDENT})
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<? extends DisciplineFacade>>> getDisciplines(
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+            @RequestParam(required = false) Integer teacherId,
+            @RequestParam(required = false) String teacherFullName,
+            @RequestParam(required = false) String nameDiscipline
+
+    ) throws EntityNotFoundException {
+        List<? extends DisciplineFacade> disciplines = disciplineService
+                .getDisciplines(tokenPrincipal.getAccountIdentity(), () -> teacherId, teacherFullName, nameDiscipline);
+        return ApiResponse.success(disciplines);
     }
 
     @Secured({Role.TEACHER, Role.STUDENT})
