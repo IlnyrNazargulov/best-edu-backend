@@ -26,8 +26,9 @@ public class ExerciseFile implements ExerciseFileFacade, Serializable {
     @JoinColumn(name = "exercise_id", nullable = false, updatable = false)
     private Exercise exercise;
 
-    public ExerciseFile(File file, String mimeType) {
+    public ExerciseFile(File file, String mimeType, Exercise exercise) {
         this.file = file;
         this.mimeType = mimeType;
+        this.exercise = exercise;
     }
 }

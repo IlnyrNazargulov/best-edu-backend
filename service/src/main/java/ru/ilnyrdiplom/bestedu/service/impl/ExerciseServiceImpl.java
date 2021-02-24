@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ilnyrdiplom.bestedu.dal.dto.ExerciseWithoutContent;
 import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
 import ru.ilnyrdiplom.bestedu.dal.model.Exercise;
-import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
-import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 import ru.ilnyrdiplom.bestedu.dal.repositories.ExerciseRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.ExerciseAlreadyExistsException;
@@ -111,15 +109,12 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
         return existExercise;
     }
 
-    public Exercise checkAccessExercise(AccountIdentity accountIdentity, ExerciseIdentity exerciseIdentity)
-            throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException {
-        Account account = accountService.getAccount(accountIdentity);
-        if (!(account instanceof AccountTeacher)) {
-            throw new WrongAccountTypeException();
-        }
-        Exercise exercise = exerciseRepository.findByAccountAndId((AccountTeacher) account, exerciseIdentity.getId());
+    @Override
+    public Exercise getExerciseByDiscipline(Discipline discipline, ExerciseIdentity exerciseIdentity)
+            throws EntityNotFoundException {
+        Exercise exercise = exerciseRepository.findByDisciplineAndId(discipline, exerciseIdentity.getId());
         if (exercise == null) {
-            throw new ImpossibleAccessDisciplineException(() -> exercise.getDiscipline().getId(), accountIdentity);
+            throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }
         return exercise;
     }

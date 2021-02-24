@@ -1,8 +1,6 @@
 package ru.ilnyrdiplom.bestedu.dal.model;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
 import ru.ilnyrdiplom.bestedu.facade.model.CommentFacade;
 
@@ -21,6 +19,7 @@ public class Comment implements CommentFacade {
     private Instant createdAt;
     @Column(nullable = false)
     private String text;
+    @Setter
     private boolean isRemoved;
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false, updatable = false)
@@ -31,4 +30,13 @@ public class Comment implements CommentFacade {
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false, updatable = false)
     private Exercise exercise;
+
+    @Builder
+    public Comment(Instant createdAt, String text, Account author, Comment parent, Exercise exercise) {
+        this.createdAt = createdAt;
+        this.text = text;
+        this.author = author;
+        this.parent = parent;
+        this.exercise = exercise;
+    }
 }

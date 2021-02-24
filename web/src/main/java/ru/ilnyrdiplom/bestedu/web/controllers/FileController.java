@@ -31,11 +31,12 @@ public class FileController {
 
     private final FileUploadServiceFacade fileService;
 
-    @PostMapping("/exercises/{exerciseId}/files/")
+    @PostMapping("/disciplines/{disciplineId}/exercises/{exerciseId}/files/")
     public ResponseEntity<ApiResponse<ExerciseFileFacade>> uploadExerciseFile(
             final @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @PathVariable int exerciseId
+            @PathVariable int exerciseId,
+            @PathVariable int disciplineId
     ) throws Exception {
         ExerciseFileFacade exerciseFile;
         try (InputStream inputStream = file.getInputStream()) {
@@ -43,6 +44,7 @@ public class FileController {
                     inputStream,
                     file.getOriginalFilename(),
                     tokenPrincipal.getAccountIdentity(),
+                    () -> disciplineId,
                     () -> exerciseId
             );
         }
@@ -55,24 +57,26 @@ public class FileController {
         return ApiResponse.success(exerciseFile);
     }
 
-    @DeleteMapping("/exercises/{exerciseId}/files/{fileId}/")
+    @DeleteMapping("/disciplines/{disciplineId}/exercises/{exerciseId}/files/{fileId}/")
     public ResponseEntity<ApiResponse<ExerciseFacade>> deleteExerciseFile(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @PathVariable int exerciseId,
+            @PathVariable int disciplineId,
             @PathVariable UUID fileId
     ) throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException {
-        fileService.deleteExerciseFile(tokenPrincipal.getAccountIdentity(), () -> exerciseId, fileId);
+        fileService.deleteExerciseFile(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId, fileId);
         return ApiResponse.success();
     }
 
     @Secured({Role.TEACHER, Role.STUDENT})
-    @GetMapping("/exercise/{exerciseId}/files/")
+    @GetMapping("/disciplines/{disciplineId}/exercise/{exerciseId}/files/")
     public ResponseEntity<ApiResponse<List<? extends ExerciseFileFacade>>> getExerciseFiles(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @PathVariable int exerciseId
+            @PathVariable int exerciseId,
+            @PathVariable int disciplineId
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
         List<? extends ExerciseFileFacade> exerciseFiles = fileService
-                .getExerciseFiles(tokenPrincipal.getAccountIdentity(), () -> exerciseId);
+                .getExerciseFiles(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId);
         return ApiResponse.success(exerciseFiles);
     }
 

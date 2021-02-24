@@ -5,6 +5,7 @@ import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineExcept
 import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFileFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
+import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.ExerciseIdentity;
 
 import java.io.InputStream;
@@ -13,14 +14,24 @@ import java.util.UUID;
 
 public interface FileUploadServiceFacade {
 
-    List<? extends ExerciseFileFacade> getExerciseFiles(AccountIdentity accountIdentity,
-                                                        ExerciseIdentity exerciseIdentity)
+    List<? extends ExerciseFileFacade> getExerciseFiles(
+            AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
+            ExerciseIdentity exerciseIdentity
+    )
             throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException;
 
-    ExerciseFileFacade uploadExerciseFile(InputStream fileInputStream, String fileName, AccountIdentity accountIdentity, ExerciseIdentity exerciseIdentity) throws Exception;
+    ExerciseFileFacade uploadExerciseFile(
+            InputStream fileInputStream,
+            String fileName,
+            AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
+            ExerciseIdentity exerciseIdentity
+    ) throws Exception;
 
     void deleteExerciseFile(
             AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
             ExerciseIdentity exerciseIdentity,
             UUID fileUuid
     ) throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException;
