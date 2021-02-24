@@ -25,7 +25,7 @@ public class Exercise implements ExerciseFacade {
     private boolean isRemoved = false;
     @Setter
     private int orderNumber;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "discipline_id", nullable = false, updatable = false)
     private Discipline discipline;
 
