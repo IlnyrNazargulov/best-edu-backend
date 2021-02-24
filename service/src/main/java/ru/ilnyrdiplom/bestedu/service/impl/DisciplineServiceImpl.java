@@ -74,11 +74,17 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
 
     @Override
     @Transactional
-    public Discipline updateDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity, String newName)
+    public Discipline updateDiscipline(
+            AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
+            String newName,
+            boolean isPublic
+    )
             throws EntityNotFoundException {
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
         Discipline discipline = getDisciplineByTeacher(accountTeacher, disciplineIdentity);
         discipline.setName(newName);
+        discipline.setRemoved(isPublic);
         return discipline;
     }
 

@@ -31,6 +31,7 @@ public class BestEduApplication {
             jacksonObjectMapperBuilder.mixIn(ExerciseFileFacade.class, ExerciseFileMixin.class);
             jacksonObjectMapperBuilder.mixIn(FileFacade.class, FileMixin.class);
             jacksonObjectMapperBuilder.mixIn(NotificationFacade.class, NotificationMixin.class);
+            jacksonObjectMapperBuilder.mixIn(ExerciseWithoutContentFacade.class, ExerciseWithoutContentMixin.class);
 
             jacksonObjectMapperBuilder.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             jacksonObjectMapperBuilder.featuresToEnable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);

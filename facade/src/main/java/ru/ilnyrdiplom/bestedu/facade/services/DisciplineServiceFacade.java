@@ -14,7 +14,12 @@ public interface DisciplineServiceFacade {
     DisciplineFacade createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic)
             throws EntityNotFoundException, DisciplineAlreadyExistsException;
 
-    DisciplineFacade updateDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity, String name)
+    DisciplineFacade updateDiscipline(
+            AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
+            String name,
+            boolean isPublic
+    )
             throws EntityNotFoundException;
 
     DisciplineFacade deleteDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)

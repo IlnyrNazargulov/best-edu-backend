@@ -68,7 +68,7 @@ public class FileController {
         return ApiResponse.success();
     }
 
-    @Secured({Role.TEACHER, Role.STUDENT})
+    @Secured({Role.TEACHER})
     @GetMapping("/disciplines/{disciplineId}/exercise/{exerciseId}/files/")
     public ResponseEntity<ApiResponse<List<? extends ExerciseFileFacade>>> getExerciseFiles(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,

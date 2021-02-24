@@ -48,7 +48,7 @@ public class AccountController {
 
     @Secured({Role.TEACHER, Role.STUDENT})
     @GetMapping
-    public ResponseEntity<ApiResponse<List<? extends AccountFacade>>> getAccountTeacher(
+    public ResponseEntity<ApiResponse<List<? extends AccountFacade>>> getAccountTeachers(
             @RequestParam String fullName,
             Pageable pageable
     ) {

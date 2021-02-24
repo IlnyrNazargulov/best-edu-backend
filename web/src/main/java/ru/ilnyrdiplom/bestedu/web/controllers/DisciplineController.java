@@ -43,7 +43,12 @@ public class DisciplineController {
                                                                           @RequestBody DisciplineRequest disciplineRequest
     ) throws EntityNotFoundException {
         DisciplineFacade discipline = disciplineService
-                .updateDiscipline(tokenPrincipal.getAccountIdentity(), () -> disciplineId, disciplineRequest.getName());
+                .updateDiscipline(
+                        tokenPrincipal.getAccountIdentity(),
+                        () -> disciplineId,
+                        disciplineRequest.getName(),
+                        disciplineRequest.isPublic()
+                );
         return ApiResponse.success(discipline);
     }
 
