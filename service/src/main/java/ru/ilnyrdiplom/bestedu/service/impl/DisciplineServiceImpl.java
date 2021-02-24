@@ -18,12 +18,13 @@ import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
 import ru.ilnyrdiplom.bestedu.service.service.AccountService;
+import ru.ilnyrdiplom.bestedu.service.service.DisciplineService;
 
 import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
-public class DisciplineServiceImpl implements DisciplineServiceFacade {
+public class DisciplineServiceImpl implements DisciplineServiceFacade, DisciplineService {
     private final AccountService accountService;
     private final DisciplineRepository disciplineRepository;
     private final AccessDisciplineRepository accessDisciplineRepository;

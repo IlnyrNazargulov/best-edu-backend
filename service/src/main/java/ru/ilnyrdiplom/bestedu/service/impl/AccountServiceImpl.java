@@ -21,7 +21,6 @@ import ru.ilnyrdiplom.bestedu.service.service.EmailService;
 import ru.ilnyrdiplom.bestedu.service.service.RequestCodeService;
 
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
 
 @Component
 @RequiredArgsConstructor

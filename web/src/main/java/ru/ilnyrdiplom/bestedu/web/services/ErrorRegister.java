@@ -38,7 +38,8 @@ public class ErrorRegister {
                 (e) -> new ErrorBody(ErrorCodes.IMPOSSIBLE_ACCESS_DISCIPLINE, e.getMessage(), e, HttpStatus.BAD_REQUEST));
         register(WrongAccountTypeException.class,
                 (e) -> new ErrorBody(ErrorCodes.WRONG_ACCOUNT_TYPE, e.getMessage(), e, HttpStatus.BAD_REQUEST));
-
+        register(ExerciseAlreadyExistsException.class,
+                (e) -> new ErrorBody(ErrorCodes.EXERCISE_ALREADY_EXISTS, e.getMessage(), e, HttpStatus.BAD_REQUEST));
     }
 
     protected <T extends Exception> void register(Class<T> exceptionClass, Function<T, ErrorBody> converter) {

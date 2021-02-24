@@ -20,6 +20,11 @@
             <artifactId>dal</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>facade</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!--        Non-project dependencies -->
         <dependency>
             <groupId>org.springframework.security</groupId>
