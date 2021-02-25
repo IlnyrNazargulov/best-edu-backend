@@ -8,5 +8,7 @@ import java.time.Instant;
 public interface RequestCodeService {
     RequestCode create(String email, Instant now);
 
+    RequestCode save(RequestCode requestCode);
+
     RequestCodeStatusFacade tryRequestNewCodeOrGetExisting(RequestCode requestCode);
 }

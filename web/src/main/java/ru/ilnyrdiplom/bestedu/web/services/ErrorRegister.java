@@ -40,6 +40,10 @@ public class ErrorRegister {
                 (e) -> new ErrorBody(ErrorCodes.WRONG_ACCOUNT_TYPE, e.getMessage(), e, HttpStatus.BAD_REQUEST));
         register(ExerciseAlreadyExistsException.class,
                 (e) -> new ErrorBody(ErrorCodes.EXERCISE_ALREADY_EXISTS, e.getMessage(), e, HttpStatus.BAD_REQUEST));
+        register(WrongCredentialsException.class,
+                (e) -> new ErrorBody(ErrorCodes.WRONG_CREDENTIALS, e.getMessage(), e, HttpStatus.BAD_REQUEST));
+        register(FileSizeExceededException.class,
+                (e) -> new ErrorBody(ErrorCodes.FILE_SIZE_EXCEEDED, e.getMessage(), e, HttpStatus.BAD_REQUEST));
     }
 
     protected <T extends Exception> void register(Class<T> exceptionClass, Function<T, ErrorBody> converter) {

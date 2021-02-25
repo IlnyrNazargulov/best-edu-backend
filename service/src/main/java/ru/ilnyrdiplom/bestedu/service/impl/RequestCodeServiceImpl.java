@@ -72,12 +72,17 @@ public class RequestCodeServiceImpl implements RequestCodeService, RequestCodeSe
     public RequestCode create(String email, Instant now) {
         String generateCode = randomService.generateCode(6);
         RequestCode requestCode = new RequestCode(email, generateCode, now);
+        return requestCode;
+    }
+
+    @Override
+    public RequestCode save(RequestCode requestCode) {
         return requestCodeRepository.save(requestCode);
     }
 
     @Override
     public void verify(String email, String code) throws WrongRequestCodeException, EntityNotFoundException {
-        RequestCode requestCode = requestCodeRepository.findTopRequestCodeByEmailOrderByCreatedAt(email);
+        RequestCode requestCode = requestCodeRepository.findTopRequestCodeByEmailOrderByCreatedAtDesc(email);
         if (requestCode == null) {
             throw new EntityNotFoundException(email, RequestCode.class);
         }

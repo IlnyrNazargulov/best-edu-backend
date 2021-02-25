@@ -7,7 +7,7 @@ public interface DisciplineFacade {
 
     String getName();
 
-    AccountTeacherFacade getTeacher();
-
     boolean isPublic();
+
+    boolean isRemoved();
 }

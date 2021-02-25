@@ -16,6 +16,8 @@ import ru.ilnyrdiplom.bestedu.web.contracts.requests.CommentRequest;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.ApiResponse;
 import ru.ilnyrdiplom.bestedu.web.model.TokenPrincipal;
 
+import java.util.List;
+
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +25,19 @@ import ru.ilnyrdiplom.bestedu.web.model.TokenPrincipal;
 public class CommentController {
     private final CommentServiceFacade commentService;
 
+    @GetMapping("/disciplines/{disciplineId}/exercises/{exerciseId}/comments/")
+    public ResponseEntity<ApiResponse<List<? extends CommentFacade>>> getComments(
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+            @PathVariable int disciplineId,
+            @PathVariable int exerciseId
+    ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
+        List<? extends CommentFacade> comments = commentService
+                .getComments(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId);
+        return ApiResponse.success(comments);
+    }
+
     @PostMapping("/disciplines/{disciplineId}/exercises/{exerciseId}/comments/")
-    public ResponseEntity<ApiResponse<CommentFacade>> addExercise(
+    public ResponseEntity<ApiResponse<CommentFacade>> addComment(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @RequestBody CommentRequest commentRequest,
             @PathVariable int disciplineId,
@@ -37,17 +50,17 @@ public class CommentController {
 
     @Secured(Role.TEACHER)
     @DeleteMapping("/disciplines/{disciplineId}/exercises/{exerciseId}/comments/{commentId}/")
-    public ResponseEntity<ApiResponse<CommentFacade>> deleteComment(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-                                                                    @PathVariable int disciplineId,
-                                                                    @PathVariable int exerciseId,
-                                                                    @PathVariable int commentId
+    public ResponseEntity deleteComment(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+                                        @PathVariable int disciplineId,
+                                        @PathVariable int exerciseId,
+                                        @PathVariable int commentId
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
-        CommentFacade comment = commentService.deleteComment(
+        commentService.deleteComment(
                 tokenPrincipal.getAccountIdentity(),
                 () -> disciplineId,
                 () -> exerciseId,
                 () -> commentId
         );
-        return ApiResponse.success(comment);
+        return ApiResponse.success();
     }
 }

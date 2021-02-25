@@ -48,7 +48,7 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     }
 
     @Override
-    public AccountTeacher createAccountTeacher(RegisterRequestFacade registerRequestFacade) throws AccountLoginException {
+    public AccountTeacher createAccountTeacher(RegisterRequestFacade registerRequestFacade, String email) throws AccountLoginException {
         Instant now = Instant.now();
         Account existAccount = accountRepository.findAccountByLogin(registerRequestFacade.getLogin());
         if (existAccount != null) {
@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
         String hashPassword = passwordService.hashPassword(registerRequestFacade.getPlainPassword());
         AccountTeacher accountTeacher = new AccountTeacher(
                 now,
-                registerRequestFacade.getLogin(),
+                email,
                 hashPassword,
                 registerRequestFacade.getSecondName(),
                 registerRequestFacade.getFirstName(),
@@ -117,31 +117,27 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     }
 
     @Override
-    public RequestCodeStatusFacade registerRequestCode(String email) throws AccountLoginException {
+    public RequestCodeStatusFacade registerRequestCode(String email) {
         Instant now = Instant.now();
-        Account existAccount = accountRepository.findAccountByLogin(email);
-        if (existAccount != null) {
-            throw new AccountLoginException(email);
-        }
         RequestCode requestCode = requestCodeService.create(email, now);
         RequestCodeStatusFacade requestCodeStatus = requestCodeService.tryRequestNewCodeOrGetExisting(requestCode);
         if (!requestCodeStatus.isCodeSent()) {
             return requestCodeStatus;
         }
         verificationEmailService.sendVerifyMessage(email, requestCode.getCode());
+        requestCodeService.save(requestCode);
         return requestCodeStatus;
     }
 
     @Override
     @Transactional
-    public Account resetPassword(String email, String newPassword) throws EntityNotFoundException {
+    public void resetPassword(String email, String newPassword) throws EntityNotFoundException {
         Account existAccount = accountRepository.findAccountByLogin(email);
         if (existAccount == null) {
             throw new EntityNotFoundException(email, Account.class);
         }
         String newHashPassword = passwordService.hashPassword(newPassword);
         existAccount.setPasswordHash(newHashPassword);
-        return existAccount;
     }
 
     @Override

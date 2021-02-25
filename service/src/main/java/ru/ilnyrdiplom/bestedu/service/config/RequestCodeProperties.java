@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties("ru.ddg.penoplex.service.request-code")
+@ConfigurationProperties("ru.ilnyrdiplom.bestedu.service.request-code")
 public class RequestCodeProperties {
     private int maxCodeRequestsPerInterval;
     private long requestCodeInterval;

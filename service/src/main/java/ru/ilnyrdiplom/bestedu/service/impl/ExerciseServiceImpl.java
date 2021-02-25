@@ -16,7 +16,6 @@ import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.ExerciseIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.ExerciseRequestFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.ExerciseServiceFacade;
-import ru.ilnyrdiplom.bestedu.service.service.AccountService;
 import ru.ilnyrdiplom.bestedu.service.service.DisciplineService;
 import ru.ilnyrdiplom.bestedu.service.service.ExerciseService;
 
@@ -28,7 +27,6 @@ import java.util.List;
 public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final DisciplineService disciplineService;
-    private final AccountService accountService;
 
     @Override
     public Exercise createExercise(AccountIdentity accountIdentity,
@@ -38,7 +36,7 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException {
         Instant now = Instant.now();
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise existExercise = exerciseRepository.findByDisciplineAndName(
+        Exercise existExercise = exerciseRepository.findByDisciplineAndNameAndIsRemovedFalse(
                 discipline,
                 exerciseRequest.getName()
         );
@@ -63,13 +61,13 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
             ExerciseRequestFacade exerciseRequest
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise existExercise = exerciseRepository.findByDisciplineAndId(discipline, exerciseIdentity.getId());
+        Exercise existExercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());
         if (existExercise == null) {
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }
-        existExercise.setContent(existExercise.getContent());
-        existExercise.setName(existExercise.getName());
-        existExercise.setOrderNumber(existExercise.getOrderNumber());
+        existExercise.setContent(exerciseRequest.getContent());
+        existExercise.setName(exerciseRequest.getName());
+        existExercise.setOrderNumber(exerciseRequest.getOrderNumber());
         return exerciseRepository.save(existExercise);
     }
 
@@ -79,7 +77,7 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
                                 ExerciseIdentity exerciseIdentity)
             throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException {
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise existExercise = exerciseRepository.findByDisciplineAndId(discipline, exerciseIdentity.getId());
+        Exercise existExercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());
         if (existExercise == null) {
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }
@@ -101,7 +99,7 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
                                    ExerciseIdentity exerciseIdentity)
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise existExercise = exerciseRepository.findByDisciplineAndId(discipline, exerciseIdentity.getId());
+        Exercise existExercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());
         if (existExercise == null) {
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }
@@ -112,7 +110,7 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
     @Override
     public Exercise getExerciseByDiscipline(Discipline discipline, ExerciseIdentity exerciseIdentity)
             throws EntityNotFoundException {
-        Exercise exercise = exerciseRepository.findByDisciplineAndId(discipline, exerciseIdentity.getId());
+        Exercise exercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());
         if (exercise == null) {
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }

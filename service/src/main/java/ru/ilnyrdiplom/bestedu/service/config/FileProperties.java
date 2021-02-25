@@ -8,7 +8,7 @@ import java.time.Duration;
 
 @Getter
 @Setter
-@ConfigurationProperties("ru.ilnyrdiplom.bestedu.file")
+@ConfigurationProperties("ru.ilnyrdiplom.bestedu.service.file")
 public class FileProperties {
     private String uploadsPath;
 

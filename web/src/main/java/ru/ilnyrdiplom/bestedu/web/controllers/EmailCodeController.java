@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.AccountLoginException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongRequestCodeException;
 import ru.ilnyrdiplom.bestedu.facade.model.RequestCodeStatusFacade;
@@ -34,7 +33,7 @@ public class EmailCodeController {
     @PostMapping(value = "/accounts/request-code/")
     public ResponseEntity<ApiResponse<RequestCodeResponse>> registerRequestCode(
             @Validated @RequestBody VerifyEmailRequest verifyEmailRequest
-    ) throws AccountLoginException {
+    ) {
         RequestCodeStatusFacade requestCodeStatus = accountService.registerRequestCode(verifyEmailRequest.getEmail());
         RequestCodeResponse requestCodeResponse = new RequestCodeResponse(requestCodeStatus.getNextAttemptAfter());
         if (requestCodeStatus.isCodeSent()) {

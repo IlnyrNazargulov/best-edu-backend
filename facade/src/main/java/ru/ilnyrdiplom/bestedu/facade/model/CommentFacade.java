@@ -7,9 +7,5 @@ public interface CommentFacade {
 
     String getText();
 
-    AccountFacade getAuthor();
-
-    ExerciseFacade getExercise();
-
-    CommentFacade getParent();
+    Integer getParentId();
 }

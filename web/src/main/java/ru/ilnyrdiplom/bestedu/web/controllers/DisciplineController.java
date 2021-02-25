@@ -41,7 +41,7 @@ public class DisciplineController {
     public ResponseEntity<ApiResponse<DisciplineFacade>> updateDiscipline(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
                                                                           @PathVariable int disciplineId,
                                                                           @RequestBody DisciplineRequest disciplineRequest
-    ) throws EntityNotFoundException {
+    ) throws EntityNotFoundException, DisciplineAlreadyExistsException {
         DisciplineFacade discipline = disciplineService
                 .updateDiscipline(
                         tokenPrincipal.getAccountIdentity(),

@@ -21,6 +21,7 @@ import ru.ilnyrdiplom.bestedu.service.service.DisciplineService;
 import ru.ilnyrdiplom.bestedu.service.service.ExerciseService;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +30,17 @@ public class CommentServiceImpl implements CommentServiceFacade {
     private final AccountService accountService;
     private final DisciplineService disciplineService;
     private final ExerciseService exerciseService;
+
+    @Override
+    public List<Comment> getComments(AccountIdentity accountIdentity,
+                                     DisciplineIdentity disciplineIdentity,
+                                     ExerciseIdentity exerciseIdentity
+    )
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
+        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
+        Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
+        return commentRepository.findComments(exercise);
+    }
 
     @Override
     public Comment createComment(
@@ -57,7 +69,7 @@ public class CommentServiceImpl implements CommentServiceFacade {
     }
 
     @Override
-    public Comment deleteComment(
+    public void deleteComment(
             AccountIdentity accountIdentity,
             DisciplineIdentity disciplineIdentity,
             ExerciseIdentity exerciseIdentity,
@@ -70,6 +82,6 @@ public class CommentServiceImpl implements CommentServiceFacade {
             throw new EntityNotFoundException(commentIdentity, Comment.class);
         }
         comment.setRemoved(true);
-        return commentRepository.save(comment);
+        commentRepository.save(comment);
     }
 }

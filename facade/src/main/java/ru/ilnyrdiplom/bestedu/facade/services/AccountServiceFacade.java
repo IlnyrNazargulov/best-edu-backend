@@ -16,13 +16,13 @@ import java.util.List;
 
 public interface AccountServiceFacade {
 
-    AccountTeacherFacade createAccountTeacher(RegisterRequestFacade registerRequestFacade) throws AccountLoginException;
+    AccountTeacherFacade createAccountTeacher(RegisterRequestFacade registerRequestFacade, String email) throws AccountLoginException;
 
     AccountStudentFacade createAccountStudent(RegisterRequestFacade registerRequestFacade) throws AccountLoginException;
 
-    RequestCodeStatusFacade registerRequestCode(String email) throws AccountLoginException;
+    RequestCodeStatusFacade registerRequestCode(String email);
 
-    AccountFacade resetPassword(String email, String newPassword) throws EntityNotFoundException;
+    void resetPassword(String email, String newPassword) throws EntityNotFoundException;
 
     AccountFacade changePassword(AccountIdentity accountIdentity, String newPassword) throws EntityNotFoundException;
 

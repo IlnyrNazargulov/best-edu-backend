@@ -20,7 +20,7 @@ public interface DisciplineServiceFacade {
             String name,
             boolean isPublic
     )
-            throws EntityNotFoundException;
+            throws EntityNotFoundException, DisciplineAlreadyExistsException;
 
     DisciplineFacade deleteDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException;

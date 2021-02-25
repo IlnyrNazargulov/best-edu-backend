@@ -84,10 +84,11 @@ public class AccountController {
     @Secured(Role.EMAIL_VERIFIED)
     @PostMapping(value = "/teachers/register/")
     public ResponseEntity<ApiResponse<AccountWithTokenResponse>> registerTeacher(
-            @Validated @RequestBody RegisterRequest registerRequest
+            @AuthenticationPrincipal String email,
+            @Validated @RequestBody TeacherRegisterRequest teacherRegisterRequest
     )
             throws AccountLoginException {
-        AccountTeacherFacade account = accountService.createAccountTeacher(registerRequest);
+        AccountTeacherFacade account = accountService.createAccountTeacher(teacherRegisterRequest, email);
         OAuth2AccessToken accessTokenByAccount = securityTokenService.createAccessTokenByAccount(account);
         return ApiResponse.success(new AccountWithTokenResponse(accessTokenByAccount, account));
     }
@@ -128,13 +129,13 @@ public class AccountController {
 
     @Secured(Role.EMAIL_VERIFIED)
     @PostMapping(value = "/reset-password/")
-    public ResponseEntity<ApiResponse<AccountFacade>> resetPassword(
+    public ResponseEntity resetPassword(
             @AuthenticationPrincipal String email,
             @Validated @RequestBody ChangePasswordRequest changePasswordRequest
     )
             throws EntityNotFoundException {
-        AccountFacade account = accountService.resetPassword(email, changePasswordRequest.getPassword());
-        return ApiResponse.success(account);
+        accountService.resetPassword(email, changePasswordRequest.getPassword());
+        return ApiResponse.success();
     }
 
     @Secured({Role.TEACHER, Role.STUDENT})

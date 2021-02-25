@@ -51,7 +51,7 @@ public class FileUploadServiceImpl implements FileUploadServiceFacade {
             throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException {
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
         Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
-        return exerciseFileRepository.findByExercise(exercise);
+        return exerciseFileRepository.findExerciseFile(exercise);
     }
 
     @Override

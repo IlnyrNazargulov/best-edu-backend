@@ -80,8 +80,13 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
             String newName,
             boolean isPublic
     )
-            throws EntityNotFoundException {
+            throws EntityNotFoundException, DisciplineAlreadyExistsException {
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
+        Discipline existDiscipline = disciplineRepository
+                .findDisciplineByNameAndTeacherAndIsRemovedFalse(newName, accountTeacher);
+        if (existDiscipline != null) {
+            throw new DisciplineAlreadyExistsException(newName, accountIdentity);
+        }
         Discipline discipline = getDisciplineByTeacher(accountTeacher, disciplineIdentity);
         discipline.setName(newName);
         discipline.setRemoved(isPublic);

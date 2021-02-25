@@ -10,6 +10,8 @@ import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.ExerciseIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.CommentRequestFacade;
 
+import java.util.List;
+
 public interface CommentServiceFacade {
     CommentFacade createComment(
             AccountIdentity accountIdentity,
@@ -18,10 +20,16 @@ public interface CommentServiceFacade {
             CommentRequestFacade commentRequest
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
 
-    CommentFacade deleteComment(
+    void deleteComment(
             AccountIdentity accountIdentity,
             DisciplineIdentity disciplineIdentity,
             ExerciseIdentity exerciseIdentity,
             CommentIdentity commentIdentity
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
+
+    List<? extends CommentFacade> getComments(AccountIdentity accountIdentity,
+                                              DisciplineIdentity disciplineIdentity,
+                                              ExerciseIdentity exerciseIdentity
+    )
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
 }

@@ -39,4 +39,9 @@ public class Comment implements CommentFacade {
         this.parent = parent;
         this.exercise = exercise;
     }
+
+    @Override
+    public Integer getParentId() {
+        return parent != null ? parent.getId() : null;
+    }
 }
