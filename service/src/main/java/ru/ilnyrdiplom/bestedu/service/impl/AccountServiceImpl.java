@@ -50,9 +50,9 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     @Override
     public AccountTeacher createAccountTeacher(RegisterRequestFacade registerRequestFacade, String email) throws AccountLoginException {
         Instant now = Instant.now();
-        Account existAccount = accountRepository.findAccountByLogin(registerRequestFacade.getLogin());
+        Account existAccount = accountRepository.findAccountByLogin(email);
         if (existAccount != null) {
-            throw new AccountLoginException(registerRequestFacade.getLogin());
+            throw new AccountLoginException(email);
         }
         String hashPassword = passwordService.hashPassword(registerRequestFacade.getPlainPassword());
         AccountTeacher accountTeacher = new AccountTeacher(
