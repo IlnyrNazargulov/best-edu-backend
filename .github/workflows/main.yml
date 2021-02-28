@@ -12,6 +12,6 @@ jobs:
       - name: Remove old application.
         run: sudo rm -rf /home/bestedu/best-edu-backend/*
       - name: Build jar archive.
-        run: mvn clean install
+        run: sudo /opt/maven/apache-maven-3.6.3/bin/mvn clean install
       - name: Transfer artifact.
         run: sudo mv web-1.0-SNAPSHOT.jar /home/bestedu/best-edu-backend
