@@ -14,6 +14,8 @@ jobs:
       - name: Current directory.
         run: pwd
       - name: Remove old application.
-        run: sudo rm -rf /home/bestedu/best-edu-backend/*
+        run: sudo rm -rf /home/bestedu/best-edu-backend/builds/*
       - name: Transfer artifact.
-        run: sudo mv web/target/web-1.0-SNAPSHOT.jar /home/bestedu/best-edu-backend
+        run: sudo mv web/target/web-1.0-SNAPSHOT.jar /home/bestedu/best-edu-backend/builds
+      - name: Start best-edu service.
+        run: sudo systemctl restart best-edu
