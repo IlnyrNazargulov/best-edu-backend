@@ -59,10 +59,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JWTVerifier jwtVerifier(Algorithm algorithm, SecurityProperties securityProperties) {
-        Instant now = Instant.now();
         JWTVerifier.BaseVerification builder = (JWTVerifier.BaseVerification) JWT
                 .require(algorithm)
                 .withIssuer(securityProperties.getIssuer());
-        return builder.build(() -> Date.from(now));
+        return builder.build(() -> Date.from(Instant.now()));
     }
 }
