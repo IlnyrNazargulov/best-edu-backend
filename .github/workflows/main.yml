@@ -14,7 +14,7 @@ jobs:
           export PATH="$PATH:/opt/java/jdk1.8.0_281/bin:/opt/java/jdk1.8.0_281/jre/bin:/opt/maven/apache-maven-3.6.3/bin"
           source /etc/profile
       - name: Build jar archive.
-        run: mvn clean install
+        run: /opt/maven/apache-maven-3.6.3/bin/mvn clean install
       - name: Remove old application.
         run: sudo rm -rf /home/bestedu/best-edu-backend/*
       - name: Transfer artifact.
