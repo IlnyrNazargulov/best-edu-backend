@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="true" scanPeriod="5 seconds">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="SYSLOG_LOG_PATTERN" value="%5p %clr([%-10.10t]){faint} %clr(%-45.45logger{39}){cyan} %clr(:){faint} %m%n-%wEx"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${SYSLOG_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
