@@ -17,6 +17,7 @@ import ru.ilnyrdiplom.bestedu.web.mixins.*;
 @PropertySource({"classpath:security.properties", "classpath:web.properties"})
 @ConfigurationPropertiesScan
 public class BestEduApplication {
+    
     public static void main(String[] args) {
         SpringApplication.run(BestEduApplication.class, args);
     }
