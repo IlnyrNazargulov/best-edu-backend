@@ -49,7 +49,7 @@ public class AccountController {
     @Secured({Role.TEACHER, Role.STUDENT})
     @GetMapping
     public ResponseEntity<ApiResponse<List<? extends AccountFacade>>> getAccountTeachers(
-            @RequestParam String fullName,
+            @RequestParam(required = false) String fullName,
             Pageable pageable
     ) {
         List<? extends AccountFacade> accounts = accountService.getAccountTeachers(fullName, pageable);
