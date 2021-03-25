@@ -1,8 +1,8 @@
 package ru.ilnyrdiplom.bestedu.web.contracts.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 @Getter
 @Setter
