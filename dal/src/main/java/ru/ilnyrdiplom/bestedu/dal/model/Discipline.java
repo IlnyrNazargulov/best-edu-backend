@@ -28,6 +28,7 @@ public class Discipline implements DisciplineFacade {
     private String name;
     @Setter
     private boolean isRemoved = false;
+    @Setter
     private boolean isPublic = true;
 
     public Discipline(AccountTeacher teacher, Instant createdAt, String name, boolean isPublic) {

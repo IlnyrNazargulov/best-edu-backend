@@ -89,7 +89,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         }
         Discipline discipline = getDisciplineByTeacher(accountTeacher, disciplineIdentity);
         discipline.setName(newName);
-        discipline.setRemoved(isPublic);
+        discipline.setPublic(isPublic);
         return discipline;
     }
 
