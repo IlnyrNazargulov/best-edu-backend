@@ -10,4 +10,5 @@ public class DisciplineRequest {
     private String name;
     @JsonProperty("isPublic")
     private boolean isPublic;
+    private String description;
 }

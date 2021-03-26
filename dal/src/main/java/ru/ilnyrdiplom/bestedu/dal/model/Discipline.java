@@ -30,11 +30,15 @@ public class Discipline implements DisciplineFacade {
     private boolean isRemoved = false;
     @Setter
     private boolean isPublic = true;
+    @Setter
+    @Column(nullable = false)
+    private String description;
 
-    public Discipline(AccountTeacher teacher, Instant createdAt, String name, boolean isPublic) {
+    public Discipline(AccountTeacher teacher, Instant createdAt, String name, boolean isPublic, String description) {
         this.teacher = teacher;
         this.createdAt = createdAt;
         this.name = name;
         this.isPublic = isPublic;
+        this.description = description;
     }
 }

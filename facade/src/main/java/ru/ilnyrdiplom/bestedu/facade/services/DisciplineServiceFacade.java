@@ -11,14 +11,15 @@ import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import java.util.List;
 
 public interface DisciplineServiceFacade {
-    DisciplineFacade createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic)
+    DisciplineFacade createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic, String description)
             throws EntityNotFoundException, DisciplineAlreadyExistsException;
 
     DisciplineFacade updateDiscipline(
             AccountIdentity accountIdentity,
             DisciplineIdentity disciplineIdentity,
             String name,
-            boolean isPublic
+            boolean isPublic,
+            String description
     )
             throws EntityNotFoundException, DisciplineAlreadyExistsException;
 

@@ -31,7 +31,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
     private final AccessDisciplineRepository accessDisciplineRepository;
 
     @Override
-    public Discipline createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic)
+    public Discipline createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic, String description)
             throws EntityNotFoundException, DisciplineAlreadyExistsException {
         Instant now = Instant.now();
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
@@ -40,7 +40,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         if (existDiscipline != null) {
             throw new DisciplineAlreadyExistsException(name, accountIdentity);
         }
-        Discipline discipline = new Discipline(accountTeacher, now, name, isPublic);
+        Discipline discipline = new Discipline(accountTeacher, now, name, isPublic, description);
         return disciplineRepository.save(discipline);
     }
 
@@ -78,7 +78,8 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
             AccountIdentity accountIdentity,
             DisciplineIdentity disciplineIdentity,
             String newName,
-            boolean isPublic
+            boolean isPublic,
+            String description
     )
             throws EntityNotFoundException, DisciplineAlreadyExistsException {
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
@@ -90,6 +91,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         Discipline discipline = getDisciplineByTeacher(accountTeacher, disciplineIdentity);
         discipline.setName(newName);
         discipline.setPublic(isPublic);
+        discipline.setDescription(description);
         return discipline;
     }
 

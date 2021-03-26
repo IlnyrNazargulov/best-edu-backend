@@ -32,7 +32,12 @@ public class DisciplineController {
                                                                        @RequestBody DisciplineRequest disciplineRequest
     ) throws DisciplineAlreadyExistsException, EntityNotFoundException {
         DisciplineFacade discipline = disciplineService
-                .createDiscipline(tokenPrincipal.getAccountIdentity(), disciplineRequest.getName(), disciplineRequest.isPublic());
+                .createDiscipline(
+                        tokenPrincipal.getAccountIdentity(),
+                        disciplineRequest.getName(),
+                        disciplineRequest.isPublic(),
+                        disciplineRequest.getDescription()
+                );
         return ApiResponse.success(discipline);
     }
 
@@ -47,7 +52,8 @@ public class DisciplineController {
                         tokenPrincipal.getAccountIdentity(),
                         () -> disciplineId,
                         disciplineRequest.getName(),
-                        disciplineRequest.isPublic()
+                        disciplineRequest.isPublic(),
+                        disciplineRequest.getDescription()
                 );
         return ApiResponse.success(discipline);
     }
