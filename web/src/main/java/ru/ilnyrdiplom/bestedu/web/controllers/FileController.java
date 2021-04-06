@@ -13,6 +13,7 @@ import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineExcept
 import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFileFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.FileFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 import ru.ilnyrdiplom.bestedu.facade.services.FileUploadServiceFacade;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.ApiResponse;
@@ -20,7 +21,6 @@ import ru.ilnyrdiplom.bestedu.web.model.TokenPrincipal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.UUID;
 
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,21 +31,17 @@ public class FileController {
 
     private final FileUploadServiceFacade fileService;
 
-    @PostMapping("/disciplines/{disciplineId}/exercises/{exerciseId}/files/")
+    @PostMapping("/files/")
     public ResponseEntity<ApiResponse<ExerciseFileFacade>> uploadExerciseFile(
             final @RequestParam("file") MultipartFile file,
-            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @PathVariable int exerciseId,
-            @PathVariable int disciplineId
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal
     ) throws Exception {
-        ExerciseFileFacade exerciseFile;
+        ExerciseFileFacade fileFacade;
         try (InputStream inputStream = file.getInputStream()) {
-            exerciseFile = fileService.uploadExerciseFile(
+            fileFacade = fileService.uploadExerciseFile(
                     inputStream,
                     file.getOriginalFilename(),
-                    tokenPrincipal.getAccountIdentity(),
-                    () -> disciplineId,
-                    () -> exerciseId
+                    tokenPrincipal.getAccountIdentity()
             );
         }
         catch (IOException e) {
@@ -54,30 +50,15 @@ public class FileController {
         catch (EntityNotFoundException ex) {
             throw new FileUploadException("Related entity is not found.", ex);
         }
-        return ApiResponse.success(exerciseFile);
+        return ApiResponse.success(fileFacade);
     }
 
-    @DeleteMapping("/disciplines/{disciplineId}/exercises/{exerciseId}/files/{fileId}/")
+    @DeleteMapping("/files/{fileId}/")
     public ResponseEntity<ApiResponse<ExerciseFacade>> deleteExerciseFile(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @PathVariable int exerciseId,
-            @PathVariable int disciplineId,
             @PathVariable UUID fileId
     ) throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException {
-        fileService.deleteExerciseFile(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId, fileId);
+        fileService.deleteExerciseFile(tokenPrincipal.getAccountIdentity(), fileId);
         return ApiResponse.success();
     }
-
-    @Secured({Role.TEACHER})
-    @GetMapping("/disciplines/{disciplineId}/exercise/{exerciseId}/files/")
-    public ResponseEntity<ApiResponse<List<? extends ExerciseFileFacade>>> getExerciseFiles(
-            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @PathVariable int exerciseId,
-            @PathVariable int disciplineId
-    ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
-        List<? extends ExerciseFileFacade> exerciseFiles = fileService
-                .getExerciseFiles(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId);
-        return ApiResponse.success(exerciseFiles);
-    }
-
 }

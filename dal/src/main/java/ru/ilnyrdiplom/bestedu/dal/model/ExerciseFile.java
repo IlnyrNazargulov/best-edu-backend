@@ -3,7 +3,9 @@ package ru.ilnyrdiplom.bestedu.dal.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFileFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.enums.ExerciseFileType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,15 +22,21 @@ public class ExerciseFile implements ExerciseFileFacade, Serializable {
     @OneToOne(cascade = CascadeType.PERSIST, optional = false)
     @JoinColumn(name = "file_uuid", unique = true, nullable = false)
     private File file;
-    @Basic(optional = false)
-    private String mimeType;
+    @Setter
     @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false, updatable = false)
+    @JoinColumn(name = "exercise_id")
     private Exercise exercise;
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private ExerciseFileType exerciseFileType;
 
-    public ExerciseFile(File file, String mimeType, Exercise exercise) {
+    public ExerciseFile(File file, Exercise exercise, ExerciseFileType exerciseFileType) {
         this.file = file;
-        this.mimeType = mimeType;
         this.exercise = exercise;
+        this.exerciseFileType = exerciseFileType;
+    }
+
+    public ExerciseFile(File file) {
+        this.file = file;
     }
 }

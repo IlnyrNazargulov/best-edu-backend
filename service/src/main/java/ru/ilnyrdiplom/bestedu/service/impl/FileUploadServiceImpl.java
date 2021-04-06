@@ -5,65 +5,47 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
-import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ilnyrdiplom.bestedu.dal.model.Exercise;
 import ru.ilnyrdiplom.bestedu.dal.model.ExerciseFile;
 import ru.ilnyrdiplom.bestedu.dal.model.File;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
+import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 import ru.ilnyrdiplom.bestedu.dal.repositories.ExerciseFileRepository;
 import ru.ilnyrdiplom.bestedu.dal.repositories.FileRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
+import ru.ilnyrdiplom.bestedu.facade.model.enums.ExerciseFileType;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
-import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
-import ru.ilnyrdiplom.bestedu.facade.model.identities.ExerciseIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.FileUploadServiceFacade;
 import ru.ilnyrdiplom.bestedu.service.config.FileProperties;
 import ru.ilnyrdiplom.bestedu.service.service.AccountService;
-import ru.ilnyrdiplom.bestedu.service.service.DisciplineService;
-import ru.ilnyrdiplom.bestedu.service.service.ExerciseService;
+import ru.ilnyrdiplom.bestedu.service.service.FileUploadService;
 import ru.ilnyrdiplom.bestedu.service.service.RandomService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class FileUploadServiceImpl implements FileUploadServiceFacade {
+public class FileUploadServiceImpl implements FileUploadServiceFacade, FileUploadService {
     private final RandomService randomService;
     private final AccountService accountService;
     private final FileRepository fileRepository;
     private final ExerciseFileRepository exerciseFileRepository;
     private final FileProperties fileProperties;
-    private final ExerciseService exerciseService;
-    private final DisciplineService disciplineService;
 
-    @Override
-    public List<ExerciseFile> getExerciseFiles(
-            AccountIdentity accountIdentity,
-            DisciplineIdentity disciplineIdentity,
-            ExerciseIdentity exerciseIdentity
-    )
-            throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException {
-        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
-        return exerciseFileRepository.findExerciseFile(exercise);
-    }
 
     @Override
     public void deleteExerciseFile(
             AccountIdentity accountIdentity,
-            DisciplineIdentity disciplineIdentity,
-            ExerciseIdentity exerciseIdentity,
             UUID fileUuid
-    ) throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException {
-        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
-        File file = fileRepository.findFileByExerciseAndId(exercise, fileUuid);
+    ) throws EntityNotFoundException {
+        AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
+        File file = fileRepository.findFileByUuidAndOwner(fileUuid, accountTeacher);
         if (file == null) {
             throw new EntityNotFoundException(fileUuid, File.class);
         }
@@ -71,23 +53,53 @@ public class FileUploadServiceImpl implements FileUploadServiceFacade {
     }
 
     @Override
+    @Transactional
+    public ExerciseFile createExerciseContentFile(AccountTeacher teacher, Exercise exercise) throws ImpossibleCreateExerciseFileException {
+        Instant now = Instant.now();
+        UUID uuid = randomService.generateUUID();
+        File file = new File(uuid, teacher, "content_" + exercise.getId(), "txt", now, 0);
+        ExerciseFile exerciseFile = exerciseFileRepository.save(new ExerciseFile(file, exercise, ExerciseFileType.CONTENT));
+        final java.io.File destination = Paths.get(
+                fileProperties.getUploadsPath(),
+                file.getUuid().toString() + "." + file.getExtension()
+        ).toFile();
+        try {
+            destination.createNewFile();
+        }
+        catch (IOException e) {
+            throw new ImpossibleCreateExerciseFileException();
+        }
+        return exerciseFile;
+    }
+
+    public void updateExerciseContentFile(ExerciseFile exerciseFile, InputStream inputStream)
+            throws ImpossibleUpdateExerciseFileException {
+        final java.io.File destination = Paths.get(
+                fileProperties.getUploadsPath(),
+                exerciseFile.getFile().getUuid().toString() + "." + exerciseFile.getFile().getExtension()
+        ).toFile();
+
+        try {
+            FileUtils.copyInputStreamToFile(inputStream, destination);
+        }
+        catch (IOException e) {
+            throw new ImpossibleUpdateExerciseFileException();
+        }
+    }
+
+    @Override
     public ExerciseFile uploadExerciseFile(
             InputStream fileInputStream,
             String fileName,
-            AccountIdentity accountIdentity,
-            DisciplineIdentity disciplineIdentity,
-            ExerciseIdentity exerciseIdentity
+            AccountIdentity accountIdentity
     )
-            throws FileUploadException, EntityNotFoundException, FileSizeExceededException, WrongAccountTypeException, ImpossibleAccessDisciplineException {
+            throws FileUploadException, EntityNotFoundException, FileSizeExceededException {
         final String contentType = extractContentType(fileName);
         if (getFileSize(fileInputStream) > fileProperties.getMaxImageSize()) {
             throw new FileSizeExceededException();
         }
-        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
-
         File uploadedFile = createFile(accountIdentity, fileInputStream, fileName);
-        ExerciseFile exerciseFile = exerciseFileRepository.save(new ExerciseFile(uploadedFile, contentType, exercise));
+        ExerciseFile exerciseFile = exerciseFileRepository.save(new ExerciseFile(uploadedFile));
 
         try {
             saveFileToDisk(uploadedFile, fileInputStream);

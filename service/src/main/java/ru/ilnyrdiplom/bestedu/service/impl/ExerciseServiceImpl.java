@@ -6,19 +6,20 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ilnyrdiplom.bestedu.dal.dto.ExerciseWithoutContent;
 import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
 import ru.ilnyrdiplom.bestedu.dal.model.Exercise;
+import ru.ilnyrdiplom.bestedu.dal.model.ExerciseFile;
+import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 import ru.ilnyrdiplom.bestedu.dal.repositories.ExerciseRepository;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ExerciseAlreadyExistsException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.ExerciseIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.requests.ExerciseRequestFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.requests.dto.ExerciseFileDtoFacade;
 import ru.ilnyrdiplom.bestedu.facade.services.ExerciseServiceFacade;
-import ru.ilnyrdiplom.bestedu.service.service.DisciplineService;
-import ru.ilnyrdiplom.bestedu.service.service.ExerciseService;
+import ru.ilnyrdiplom.bestedu.service.service.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
 
@@ -27,13 +28,17 @@ import java.util.List;
 public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final DisciplineService disciplineService;
+    private final AccountService accountService;
+    private final ExerciseFileService exerciseFileService;
+    private final FileUploadService fileUploadService;
 
     @Override
+    @Transactional
     public Exercise createExercise(AccountIdentity accountIdentity,
                                    DisciplineIdentity disciplineIdentity,
                                    ExerciseRequestFacade exerciseRequest
     )
-            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException {
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException, ImpossibleCreateExerciseFileException {
         Instant now = Instant.now();
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
         Exercise existExercise = exerciseRepository.findByDisciplineAndNameAndIsRemovedFalse(
@@ -43,14 +48,32 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
         if (existExercise != null) {
             throw new ExerciseAlreadyExistsException(exerciseRequest.getName(), disciplineIdentity);
         }
-        Exercise exercise = Exercise.builder()
-                .content(exerciseRequest.getContent())
+        Exercise exercise = exerciseRepository.save(Exercise.builder()
                 .createdAt(now)
                 .name(exerciseRequest.getName())
                 .orderNumber(exerciseRequest.getOrderNumber())
                 .discipline(discipline)
-                .build();
-        return exerciseRepository.save(exercise);
+                .build());
+        fileUploadService.createExerciseContentFile(discipline.getTeacher(), exercise);
+        return exercise;
+    }
+
+    @Override
+    public Exercise updateExerciseContent(
+            AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
+            ExerciseIdentity exerciseIdentity,
+            String content
+    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException, ImpossibleUpdateExerciseFileException {
+        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
+        Exercise existExercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());
+        if (existExercise == null) {
+            throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
+        }
+        ExerciseFile exerciseContentFile = exerciseFileService.getExerciseContentFile(existExercise);
+        InputStream inputStream = new ByteArrayInputStream(content.getBytes());
+        fileUploadService.updateExerciseContentFile(exerciseContentFile, inputStream);
+        return existExercise;
     }
 
     @Override
@@ -60,12 +83,15 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
             ExerciseIdentity exerciseIdentity,
             ExerciseRequestFacade exerciseRequest
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
+        AccountTeacher teacher = accountService.getAccountTeacher(accountIdentity);
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
         Exercise existExercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());
         if (existExercise == null) {
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }
-        existExercise.setContent(exerciseRequest.getContent());
+        for (ExerciseFileDtoFacade exerciseFileDto : exerciseRequest.getExerciseFiles()) {
+            exerciseFileService.attachExerciseFile(teacher, existExercise, exerciseFileDto.getExerciseFileType(), exerciseFileDto.getUuid());
+        }
         existExercise.setName(exerciseRequest.getName());
         existExercise.setOrderNumber(exerciseRequest.getOrderNumber());
         return exerciseRepository.save(existExercise);

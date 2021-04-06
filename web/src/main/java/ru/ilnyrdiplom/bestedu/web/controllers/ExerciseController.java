@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ExerciseAlreadyExistsException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseWithoutContentFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
@@ -33,9 +30,22 @@ public class ExerciseController {
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @RequestBody ExerciseRequest exerciseRequest,
             @PathVariable int disciplineId
-    ) throws ExerciseAlreadyExistsException, WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException {
+    ) throws ExerciseAlreadyExistsException, WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException, ImpossibleCreateExerciseFileException {
         ExerciseFacade exercise = exerciseService
                 .createExercise(tokenPrincipal.getAccountIdentity(), () -> disciplineId, exerciseRequest);
+        return ApiResponse.success(exercise);
+    }
+
+    @Secured(Role.TEACHER)
+    @PutMapping(value = "/disciplines/{disciplineId}/exercises/{exerciseId}/content/", consumes = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<ApiResponse<ExerciseFacade>> addExerciseContent(
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
+            @RequestBody String content,
+            @PathVariable int disciplineId,
+            @PathVariable int exerciseId
+    ) throws WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException, ImpossibleUpdateExerciseFileException {
+        ExerciseFacade exercise = exerciseService
+                .updateExerciseContent(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId, content);
         return ApiResponse.success(exercise);
     }
 

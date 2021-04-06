@@ -5,6 +5,8 @@ import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFacade;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -20,8 +22,6 @@ public class Exercise implements ExerciseFacade {
     @Column(nullable = false)
     private String name;
     @Setter
-    private String content;
-    @Setter
     private boolean isRemoved = false;
     @Setter
     private int orderNumber;
@@ -29,11 +29,13 @@ public class Exercise implements ExerciseFacade {
     @JoinColumn(name = "discipline_id", nullable = false, updatable = false)
     private Discipline discipline;
 
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ExerciseFile> exerciseFiles;
+
     @Builder
-    public Exercise(Instant createdAt, String name, String content, int orderNumber, Discipline discipline) {
+    public Exercise(Instant createdAt, String name, int orderNumber, Discipline discipline) {
         this.createdAt = createdAt;
         this.name = name;
-        this.content = content;
         this.orderNumber = orderNumber;
         this.discipline = discipline;
     }

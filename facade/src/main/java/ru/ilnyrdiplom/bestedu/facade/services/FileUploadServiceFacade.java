@@ -13,26 +13,14 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FileUploadServiceFacade {
-
-    List<? extends ExerciseFileFacade> getExerciseFiles(
-            AccountIdentity accountIdentity,
-            DisciplineIdentity disciplineIdentity,
-            ExerciseIdentity exerciseIdentity
-    )
-            throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException;
-
     ExerciseFileFacade uploadExerciseFile(
             InputStream fileInputStream,
             String fileName,
-            AccountIdentity accountIdentity,
-            DisciplineIdentity disciplineIdentity,
-            ExerciseIdentity exerciseIdentity
+            AccountIdentity accountIdentity
     ) throws Exception;
 
     void deleteExerciseFile(
             AccountIdentity accountIdentity,
-            DisciplineIdentity disciplineIdentity,
-            ExerciseIdentity exerciseIdentity,
             UUID fileUuid
     ) throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException;
 }

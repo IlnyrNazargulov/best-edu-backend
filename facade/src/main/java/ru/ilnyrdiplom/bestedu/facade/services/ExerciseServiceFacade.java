@@ -1,9 +1,6 @@
 package ru.ilnyrdiplom.bestedu.facade.services;
 
-import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ExerciseAlreadyExistsException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseWithoutContentFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
@@ -14,11 +11,19 @@ import ru.ilnyrdiplom.bestedu.facade.model.requests.ExerciseRequestFacade;
 import java.util.List;
 
 public interface ExerciseServiceFacade {
+
+    ExerciseFacade updateExerciseContent(
+            AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
+            ExerciseIdentity exerciseIdentity,
+            String content
+    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException, ImpossibleUpdateExerciseFileException;
+
     ExerciseFacade createExercise(AccountIdentity accountIdentity,
                                   DisciplineIdentity disciplineIdentity,
                                   ExerciseRequestFacade exerciseRequest
     )
-            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException;
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException, ImpossibleCreateExerciseFileException;
 
     ExerciseFacade updateExercise(
             AccountIdentity accountIdentity,
@@ -37,7 +42,7 @@ public interface ExerciseServiceFacade {
             throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException;
 
     ExerciseFacade deleteExercise(AccountIdentity accountIdentity,
-                            DisciplineIdentity disciplineIdentity,
-                            ExerciseIdentity exerciseIdentity)
+                                  DisciplineIdentity disciplineIdentity,
+                                  ExerciseIdentity exerciseIdentity)
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
 }
