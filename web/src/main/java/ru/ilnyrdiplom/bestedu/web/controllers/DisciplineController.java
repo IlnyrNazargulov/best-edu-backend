@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
@@ -29,7 +30,7 @@ public class DisciplineController {
     @Secured(Role.TEACHER)
     @PostMapping
     public ResponseEntity<ApiResponse<DisciplineFacade>> addDiscipline(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-                                                                       @RequestBody DisciplineRequest disciplineRequest
+                                                                       @Validated @RequestBody DisciplineRequest disciplineRequest
     ) throws DisciplineAlreadyExistsException, EntityNotFoundException {
         DisciplineFacade discipline = disciplineService
                 .createDiscipline(
@@ -45,7 +46,7 @@ public class DisciplineController {
     @PutMapping("/{disciplineId}/")
     public ResponseEntity<ApiResponse<DisciplineFacade>> updateDiscipline(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
                                                                           @PathVariable int disciplineId,
-                                                                          @RequestBody DisciplineRequest disciplineRequest
+                                                                          @Validated @RequestBody DisciplineRequest disciplineRequest
     ) throws EntityNotFoundException, DisciplineAlreadyExistsException {
         DisciplineFacade discipline = disciplineService
                 .updateDiscipline(
