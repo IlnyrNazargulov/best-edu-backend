@@ -30,7 +30,7 @@ public interface ExerciseServiceFacade {
             DisciplineIdentity disciplineIdentity,
             ExerciseIdentity exerciseIdentity,
             ExerciseRequestFacade exerciseRequest
-    ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
+    ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException;
 
     ExerciseFacade getExercise(AccountIdentity accountIdentity,
                                DisciplineIdentity disciplineIdentity,

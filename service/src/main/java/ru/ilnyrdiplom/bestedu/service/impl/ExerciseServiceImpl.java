@@ -82,9 +82,16 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
             DisciplineIdentity disciplineIdentity,
             ExerciseIdentity exerciseIdentity,
             ExerciseRequestFacade exerciseRequest
-    ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
+    ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException {
         AccountTeacher teacher = accountService.getAccountTeacher(accountIdentity);
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
+        Exercise existExerciseWithNewName = exerciseRepository.findByDisciplineAndNameAndIsRemovedFalse(
+                discipline,
+                exerciseRequest.getName()
+        );
+        if (existExerciseWithNewName != null) {
+            throw new ExerciseAlreadyExistsException(exerciseRequest.getName(), disciplineIdentity);
+        }
         Exercise existExercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());
         if (existExercise == null) {
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);

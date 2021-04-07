@@ -56,7 +56,7 @@ public class ExerciseController {
             @RequestBody ExerciseRequest exerciseRequest,
             @PathVariable int disciplineId,
             @PathVariable int exerciseId
-    ) throws WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException {
+    ) throws WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException, ExerciseAlreadyExistsException {
         ExerciseFacade exercise = exerciseService
                 .updateExercise(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId, exerciseRequest);
         return ApiResponse.success(exercise);
