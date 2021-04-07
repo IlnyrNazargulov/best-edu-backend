@@ -85,7 +85,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
         Discipline existDiscipline = disciplineRepository
                 .findDisciplineByNameAndTeacherAndIsRemovedFalse(newName, accountTeacher);
-        if (existDiscipline != null) {
+        if (existDiscipline != null && !existDiscipline.getId().equals(disciplineIdentity.getId())) {
             throw new DisciplineAlreadyExistsException(newName, accountIdentity);
         }
         Discipline discipline = getDisciplineByTeacher(accountTeacher, disciplineIdentity);
