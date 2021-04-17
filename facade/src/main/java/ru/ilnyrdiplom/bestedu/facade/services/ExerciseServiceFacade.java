@@ -11,19 +11,11 @@ import ru.ilnyrdiplom.bestedu.facade.model.requests.ExerciseRequestFacade;
 import java.util.List;
 
 public interface ExerciseServiceFacade {
-
-    ExerciseFacade updateExerciseContent(
-            AccountIdentity accountIdentity,
-            DisciplineIdentity disciplineIdentity,
-            ExerciseIdentity exerciseIdentity,
-            String content
-    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException, ImpossibleUpdateExerciseFileException;
-
     ExerciseFacade createExercise(AccountIdentity accountIdentity,
                                   DisciplineIdentity disciplineIdentity,
                                   ExerciseRequestFacade exerciseRequest
     )
-            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException, ImpossibleCreateExerciseFileException;
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException, ExerciseAlreadyExistsException, ImpossibleCreateExerciseFileException, FileUploadException;
 
     ExerciseFacade updateExercise(
             AccountIdentity accountIdentity,

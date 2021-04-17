@@ -5,8 +5,6 @@ import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFacade;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -28,15 +26,17 @@ public class Exercise implements ExerciseFacade {
     @ManyToOne
     @JoinColumn(name = "discipline_id", nullable = false, updatable = false)
     private Discipline discipline;
-
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ExerciseFile> exerciseFiles;
+    @Setter
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "content_id")
+    private ExerciseFile content;
 
     @Builder
-    public Exercise(Instant createdAt, String name, int orderNumber, Discipline discipline) {
+    public Exercise(Instant createdAt, String name, int orderNumber, Discipline discipline, ExerciseFile content) {
         this.createdAt = createdAt;
         this.name = name;
         this.orderNumber = orderNumber;
         this.discipline = discipline;
+        this.content = content;
     }
 }

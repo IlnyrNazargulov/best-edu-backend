@@ -1,26 +1,29 @@
 package ru.ilnyrdiplom.bestedu.facade.services;
 
-import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFileFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.ImageFacade;
+import ru.ilnyrdiplom.bestedu.facade.model.enums.ExerciseFileType;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.ExerciseIdentity;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
 
 public interface FileUploadServiceFacade {
     ExerciseFileFacade uploadExerciseFile(
-            InputStream fileInputStream,
+            InputStream exerciseFileInputStream,
+            String fileName,
+            AccountIdentity accountIdentity,
+            DisciplineIdentity disciplineIdentity,
+            ExerciseIdentity exerciseIdentity,
+            ExerciseFileType exerciseFileType
+    ) throws FileSizeExceededException, FileUploadException, ImpossibleAccessDisciplineException, EntityNotFoundException, WrongAccountTypeException;
+
+    ImageFacade uploadImage(
+            InputStream image,
             String fileName,
             AccountIdentity accountIdentity
-    ) throws Exception;
+    ) throws FileUploadException, EntityNotFoundException, FileSizeExceededException;
 
-    void deleteExerciseFile(
-            AccountIdentity accountIdentity,
-            UUID fileUuid
-    ) throws WrongAccountTypeException, EntityNotFoundException, ImpossibleAccessDisciplineException;
 }

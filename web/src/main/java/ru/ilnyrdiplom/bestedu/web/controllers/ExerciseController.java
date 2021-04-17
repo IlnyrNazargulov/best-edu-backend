@@ -26,26 +26,14 @@ public class ExerciseController {
 
     @Secured(Role.TEACHER)
     @PostMapping("/disciplines/{disciplineId}/exercises/")
-    public ResponseEntity<ApiResponse<ExerciseFacade>> addExercise(
+    public ResponseEntity<ApiResponse<ExerciseFacade>> createExercise(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @RequestBody ExerciseRequest exerciseRequest,
             @PathVariable int disciplineId
-    ) throws ExerciseAlreadyExistsException, WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException, ImpossibleCreateExerciseFileException {
+    ) throws ExerciseAlreadyExistsException, WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException,
+            ImpossibleCreateExerciseFileException, FileUploadException {
         ExerciseFacade exercise = exerciseService
                 .createExercise(tokenPrincipal.getAccountIdentity(), () -> disciplineId, exerciseRequest);
-        return ApiResponse.success(exercise);
-    }
-
-    @Secured(Role.TEACHER)
-    @PutMapping(value = "/disciplines/{disciplineId}/exercises/{exerciseId}/content/", consumes = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<ApiResponse<ExerciseFacade>> addExerciseContent(
-            @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @RequestBody String content,
-            @PathVariable int disciplineId,
-            @PathVariable int exerciseId
-    ) throws WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException, ImpossibleUpdateExerciseFileException {
-        ExerciseFacade exercise = exerciseService
-                .updateExerciseContent(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId, content);
         return ApiResponse.success(exercise);
     }
 
@@ -96,5 +84,4 @@ public class ExerciseController {
                 .deleteExercise(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId);
         return ApiResponse.success(exercise);
     }
-
 }

@@ -5,20 +5,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import ru.ilnyrdiplom.bestedu.dal.model.Exercise;
 import ru.ilnyrdiplom.bestedu.dal.model.ExerciseFile;
 import ru.ilnyrdiplom.bestedu.dal.model.File;
+import ru.ilnyrdiplom.bestedu.dal.model.Image;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
 import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 import ru.ilnyrdiplom.bestedu.dal.repositories.ExerciseFileRepository;
 import ru.ilnyrdiplom.bestedu.dal.repositories.FileRepository;
+import ru.ilnyrdiplom.bestedu.dal.repositories.ImageRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
+import ru.ilnyrdiplom.bestedu.facade.model.ImageFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.ExerciseFileType;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
+import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
+import ru.ilnyrdiplom.bestedu.facade.model.identities.ExerciseIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.FileUploadServiceFacade;
 import ru.ilnyrdiplom.bestedu.service.config.FileProperties;
 import ru.ilnyrdiplom.bestedu.service.service.AccountService;
+import ru.ilnyrdiplom.bestedu.service.service.ExerciseService;
 import ru.ilnyrdiplom.bestedu.service.service.FileUploadService;
 import ru.ilnyrdiplom.bestedu.service.service.RandomService;
 
@@ -32,47 +37,93 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class FileUploadServiceImpl implements FileUploadServiceFacade, FileUploadService {
-    private final RandomService randomService;
-    private final AccountService accountService;
-    private final FileRepository fileRepository;
-    private final ExerciseFileRepository exerciseFileRepository;
     private final FileProperties fileProperties;
 
+    private final RandomService randomService;
+    private final AccountService accountService;
+    private final ExerciseService exerciseService;
+
+    private final FileRepository fileRepository;
+    private final ExerciseFileRepository exerciseFileRepository;
+    private final ImageRepository imageRepository;
 
     @Override
-    public void deleteExerciseFile(
+    public ExerciseFile uploadExerciseFile(
+            InputStream exerciseFileInputStream,
+            String fileName,
             AccountIdentity accountIdentity,
-            UUID fileUuid
-    ) throws EntityNotFoundException {
-        AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
-        File file = fileRepository.findFileByUuidAndOwner(fileUuid, accountTeacher);
-        if (file == null) {
-            throw new EntityNotFoundException(fileUuid, File.class);
+            DisciplineIdentity disciplineIdentity,
+            ExerciseIdentity exerciseIdentity,
+            ExerciseFileType exerciseFileType
+    ) throws FileSizeExceededException, FileUploadException, ImpossibleAccessDisciplineException, EntityNotFoundException, WrongAccountTypeException {
+        final String contentType = extractContentType(fileName);
+        if (getFileSize(exerciseFileInputStream) > fileProperties.getMaxImageSize()) {
+            throw new FileSizeExceededException();
         }
-        fileRepository.updateRemoved(file, true);
-    }
-
-    @Override
-    @Transactional
-    public ExerciseFile createExerciseContentFile(AccountTeacher teacher, Exercise exercise) throws ImpossibleCreateExerciseFileException {
-        Instant now = Instant.now();
-        UUID uuid = randomService.generateUUID();
-        File file = new File(uuid, teacher, "content_" + exercise.getId(), "txt", now, 0);
-        ExerciseFile exerciseFile = exerciseFileRepository.save(new ExerciseFile(file, exercise, ExerciseFileType.CONTENT));
-        final java.io.File destination = Paths.get(
-                fileProperties.getUploadsPath(),
-                file.getUuid().toString() + "." + file.getExtension()
-        ).toFile();
+        Exercise exercise = exerciseService
+                .getAvailableExercise(accountIdentity, disciplineIdentity, exerciseIdentity);
+        File uploadedFile = createFile(accountIdentity, exerciseFileInputStream, fileName);
+        ExerciseFile exerciseFile = exerciseFileRepository.save(new ExerciseFile(uploadedFile, exercise, exerciseFileType));
         try {
-            destination.createNewFile();
+            saveFileToDisk(uploadedFile, exerciseFileInputStream);
         }
-        catch (IOException e) {
-            throw new ImpossibleCreateExerciseFileException();
+        catch (FileUploadException e) {
+            fileRepository.updateRemoved(uploadedFile, true);
+            throw e;
         }
         return exerciseFile;
     }
 
-    public void updateExerciseContentFile(ExerciseFile exerciseFile, InputStream inputStream)
+    @Override
+    public ImageFacade uploadImage(
+            InputStream imageInputStream,
+            String fileName,
+            AccountIdentity accountIdentity
+    )
+            throws FileUploadException, EntityNotFoundException, FileSizeExceededException {
+        final String contentType = extractContentType(fileName);
+        if (getFileSize(imageInputStream) > fileProperties.getMaxImageSize()) {
+            throw new FileSizeExceededException();
+        }
+        File uploadedFile = createFile(accountIdentity, imageInputStream, fileName);
+        Image image = imageRepository.save(new Image(uploadedFile, contentType));
+
+        try {
+            saveFileToDisk(uploadedFile, imageInputStream);
+        }
+        catch (FileUploadException e) {
+            fileRepository.updateRemoved(uploadedFile, true);
+            throw e;
+        }
+        return image;
+    }
+
+    @Override
+    public ExerciseFile createEmptyExerciseContentFile(
+            InputStream inputStream,
+            AccountTeacher teacher,
+            Exercise exercise
+    ) throws FileUploadException {
+        Instant now = Instant.now();
+        UUID uuid = randomService.generateUUID();
+
+        File uploadedFile = new File(uuid, teacher, "content_" + exercise.getId(), "md", now, 0);
+        ExerciseFile exerciseFile = exerciseFileRepository.save(new ExerciseFile(uploadedFile, exercise, ExerciseFileType.CONTENT));
+        try {
+            saveFileToDisk(uploadedFile, inputStream);
+        }
+        catch (FileUploadException e) {
+            fileRepository.updateRemoved(uploadedFile, true);
+            throw e;
+        }
+        return exerciseFile;
+    }
+
+    @Override
+    public void updateExerciseContentFile(
+            ExerciseFile exerciseFile,
+            InputStream inputStream
+    )
             throws ImpossibleUpdateExerciseFileException {
         final java.io.File destination = Paths.get(
                 fileProperties.getUploadsPath(),
@@ -85,30 +136,6 @@ public class FileUploadServiceImpl implements FileUploadServiceFacade, FileUploa
         catch (IOException e) {
             throw new ImpossibleUpdateExerciseFileException();
         }
-    }
-
-    @Override
-    public ExerciseFile uploadExerciseFile(
-            InputStream fileInputStream,
-            String fileName,
-            AccountIdentity accountIdentity
-    )
-            throws FileUploadException, EntityNotFoundException, FileSizeExceededException {
-        final String contentType = extractContentType(fileName);
-        if (getFileSize(fileInputStream) > fileProperties.getMaxImageSize()) {
-            throw new FileSizeExceededException();
-        }
-        File uploadedFile = createFile(accountIdentity, fileInputStream, fileName);
-        ExerciseFile exerciseFile = exerciseFileRepository.save(new ExerciseFile(uploadedFile));
-
-        try {
-            saveFileToDisk(uploadedFile, fileInputStream);
-        }
-        catch (FileUploadException e) {
-            fileRepository.updateRemoved(uploadedFile, true);
-            throw e;
-        }
-        return exerciseFile;
     }
 
     private void saveFileToDisk(File dbFile, final InputStream inputStream) throws FileUploadException {

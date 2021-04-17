@@ -3,7 +3,6 @@ package ru.ilnyrdiplom.bestedu.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.ilnyrdiplom.bestedu.dal.model.Comment;
-import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
 import ru.ilnyrdiplom.bestedu.dal.model.Exercise;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
 import ru.ilnyrdiplom.bestedu.dal.repositories.CommentRepository;
@@ -37,8 +36,7 @@ public class CommentServiceImpl implements CommentServiceFacade {
                                      ExerciseIdentity exerciseIdentity
     )
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
-        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
+        Exercise exercise = exerciseService.getAvailableExercise(accountIdentity, disciplineIdentity, exerciseIdentity);
         return commentRepository.findComments(exercise);
     }
 
@@ -51,8 +49,7 @@ public class CommentServiceImpl implements CommentServiceFacade {
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
         Instant now = Instant.now();
         Account account = accountService.getAccount(accountIdentity);
-        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
+        Exercise exercise = exerciseService.getAvailableExercise(accountIdentity, disciplineIdentity, exerciseIdentity);
         Comment parentComment = null;
         if (commentRequest.getParentId() != null) {
             parentComment = commentRepository.findById(commentRequest.getParentId())
@@ -75,8 +72,7 @@ public class CommentServiceImpl implements CommentServiceFacade {
             ExerciseIdentity exerciseIdentity,
             CommentIdentity commentIdentity
     ) throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
-        Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
-        Exercise exercise = exerciseService.getExerciseByDiscipline(discipline, exerciseIdentity);
+        Exercise exercise = exerciseService.getAvailableExercise(accountIdentity, disciplineIdentity, exerciseIdentity);
         Comment comment = commentRepository.findByExerciseAndId(exercise, commentIdentity.getId());
         if (comment == null) {
             throw new EntityNotFoundException(commentIdentity, Comment.class);

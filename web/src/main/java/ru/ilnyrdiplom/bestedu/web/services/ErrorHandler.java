@@ -16,6 +16,8 @@ import ru.ilnyrdiplom.bestedu.web.contracts.ErrorBody;
 import ru.ilnyrdiplom.bestedu.web.contracts.ErrorCodes;
 import ru.ilnyrdiplom.bestedu.web.contracts.responses.ApiResponse;
 
+import javax.validation.ConstraintViolationException;
+
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -66,6 +68,12 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         }
         ApiResponse apiResponse = ApiResponse.error((ErrorBody) body);
         return super.handleExceptionInternal(ex, apiResponse, headers, status, request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+        ErrorBody errorBody = new ErrorBody(ErrorCodes.NOT_VALID_ARGUMENT, ex.getMessage(), ex, HttpStatus.BAD_REQUEST);
+        return handleExceptionInternal(ex, errorBody, null, errorBody.getHttpStatus(), request);
     }
 
     @ExceptionHandler(BaseException.class)

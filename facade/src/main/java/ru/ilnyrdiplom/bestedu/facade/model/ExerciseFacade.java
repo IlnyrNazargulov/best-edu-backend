@@ -1,7 +1,6 @@
 package ru.ilnyrdiplom.bestedu.facade.model;
 
 import java.time.Instant;
-import java.util.List;
 
 public interface ExerciseFacade {
     Integer getId();
@@ -12,5 +11,5 @@ public interface ExerciseFacade {
 
     int getOrderNumber();
 
-    List<? extends ExerciseFileFacade> getExerciseFiles();
+    ExerciseFileFacade getContent();
 }

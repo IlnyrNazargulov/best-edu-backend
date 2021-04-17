@@ -24,19 +24,17 @@ public class ExerciseFile implements ExerciseFileFacade, Serializable {
     private File file;
     @Setter
     @ManyToOne
-    @JoinColumn(name = "exercise_id")
+    @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
     @Setter
     @Enumerated(EnumType.STRING)
     private ExerciseFileType exerciseFileType;
+    @Setter
+    private boolean isRemoved = false;
 
     public ExerciseFile(File file, Exercise exercise, ExerciseFileType exerciseFileType) {
         this.file = file;
         this.exercise = exercise;
         this.exerciseFileType = exerciseFileType;
-    }
-
-    public ExerciseFile(File file) {
-        this.file = file;
     }
 }
