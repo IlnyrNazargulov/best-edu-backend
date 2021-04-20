@@ -1,9 +1,6 @@
 package ru.ilnyrdiplom.bestedu.dal.model;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
 import ru.ilnyrdiplom.bestedu.facade.model.FileFacade;
 
@@ -29,6 +26,7 @@ public class File implements Serializable, FileFacade {
     private boolean isRemoved = false;
     private String name;
     private String extension;
+    @Setter
     private long size;
 
     public File(UUID uuid, Account owner, String name, String extension, Instant createdAt, long size) {

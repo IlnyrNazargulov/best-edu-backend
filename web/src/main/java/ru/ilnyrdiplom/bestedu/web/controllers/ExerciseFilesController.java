@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleUpdateExerciseFileException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFileFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 import ru.ilnyrdiplom.bestedu.facade.services.ExerciseFileServiceFacade;
@@ -63,7 +60,7 @@ public class ExerciseFilesController {
             @RequestBody String content,
             @PathVariable int disciplineId,
             @PathVariable int exerciseId
-    ) throws WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException, ImpossibleUpdateExerciseFileException {
+    ) throws WrongAccountTypeException, ImpossibleAccessDisciplineException, EntityNotFoundException, ImpossibleUpdateExerciseFileException, FileUploadException {
         ExerciseFileFacade exerciseFileFacade = exerciseFileService
                 .updateExerciseContent(tokenPrincipal.getAccountIdentity(), () -> disciplineId, () -> exerciseId, content);
         return ApiResponse.success(exerciseFileFacade);

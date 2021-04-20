@@ -1,9 +1,6 @@
 package ru.ilnyrdiplom.bestedu.facade.services;
 
-import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleUpdateExerciseFileException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.*;
 import ru.ilnyrdiplom.bestedu.facade.model.ExerciseFileFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
@@ -24,7 +21,7 @@ public interface ExerciseFileServiceFacade {
             DisciplineIdentity disciplineIdentity,
             ExerciseIdentity exerciseIdentity,
             String content
-    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException, ImpossibleUpdateExerciseFileException;
+    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException, ImpossibleUpdateExerciseFileException, FileUploadException;
 
     ExerciseFileFacade deleteExerciseFile(
             AccountIdentity accountIdentity,

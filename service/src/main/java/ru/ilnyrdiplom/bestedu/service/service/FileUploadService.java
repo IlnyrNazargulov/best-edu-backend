@@ -15,6 +15,6 @@ public interface FileUploadService {
             Exercise exercise
     ) throws FileUploadException;
 
-    void updateExerciseContentFile(ExerciseFile exerciseFile, InputStream inputStream)
-            throws ImpossibleUpdateExerciseFileException;
+    long updateExerciseContentFile(ExerciseFile exerciseFile, InputStream inputStream)
+            throws ImpossibleUpdateExerciseFileException, FileUploadException;
 }

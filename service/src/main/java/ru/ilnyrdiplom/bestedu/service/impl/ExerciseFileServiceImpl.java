@@ -64,7 +64,7 @@ public class ExerciseFileServiceImpl implements ExerciseFileService, ExerciseFil
             DisciplineIdentity disciplineIdentity,
             ExerciseIdentity exerciseIdentity,
             String content
-    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException, ImpossibleUpdateExerciseFileException {
+    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException, ImpossibleUpdateExerciseFileException, FileUploadException {
         Exercise exercise = exerciseService.getAvailableExercise(accountIdentity, disciplineIdentity, exerciseIdentity);
         if (exercise == null) {
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
@@ -74,8 +74,9 @@ public class ExerciseFileServiceImpl implements ExerciseFileService, ExerciseFil
         if (exerciseContentFile == null) {
             throw new EntityNotFoundException(exercise.getId(), ExerciseFile.class);
         }
-        fileUploadService.updateExerciseContentFile(exerciseContentFile, inputStream);
-
+        long size = fileUploadService.updateExerciseContentFile(exerciseContentFile, inputStream);
+        exerciseFileRepository.updateSize(exerciseContentFile.getFile(), size);
+        exerciseContentFile.getFile().setSize(size);
         return exerciseContentFile;
     }
 

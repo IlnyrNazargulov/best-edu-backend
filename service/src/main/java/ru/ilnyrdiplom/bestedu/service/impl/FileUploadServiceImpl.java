@@ -120,11 +120,12 @@ public class FileUploadServiceImpl implements FileUploadServiceFacade, FileUploa
     }
 
     @Override
-    public void updateExerciseContentFile(
+    public long updateExerciseContentFile(
             ExerciseFile exerciseFile,
             InputStream inputStream
     )
-            throws ImpossibleUpdateExerciseFileException {
+            throws ImpossibleUpdateExerciseFileException, FileUploadException {
+        long size = getFileSize(inputStream);
         final java.io.File destination = Paths.get(
                 fileProperties.getUploadsPath(),
                 exerciseFile.getFile().getUuid().toString() + "." + exerciseFile.getFile().getExtension()
@@ -136,6 +137,7 @@ public class FileUploadServiceImpl implements FileUploadServiceFacade, FileUploa
         catch (IOException e) {
             throw new ImpossibleUpdateExerciseFileException();
         }
+        return size;
     }
 
     private void saveFileToDisk(File dbFile, final InputStream inputStream) throws FileUploadException {
