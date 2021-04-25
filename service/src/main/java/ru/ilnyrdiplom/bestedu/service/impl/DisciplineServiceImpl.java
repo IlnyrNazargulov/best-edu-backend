@@ -13,7 +13,6 @@ import ru.ilnyrdiplom.bestedu.dal.repositories.DisciplineRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
@@ -61,15 +60,13 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
 
     @Override
     public Discipline getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
-            throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException {
-        Account account = accountService.getAccount(accountIdentity);
-        if (account instanceof AccountTeacher) {
-            return getDisciplineByTeacher((AccountTeacher) account, disciplineIdentity);
+            throws EntityNotFoundException {
+        Discipline availableDiscipline = disciplineRepository
+                .findAvailableDiscipline(accountIdentity.getId(), disciplineIdentity.getId());
+        if (availableDiscipline == null) {
+            throw new EntityNotFoundException(disciplineIdentity, Discipline.class);
         }
-        if (account instanceof AccountStudent) {
-            return getDisciplineByStudent((AccountStudent) account, disciplineIdentity);
-        }
-        throw new WrongAccountTypeException();
+        return availableDiscipline;
     }
 
     @Override
