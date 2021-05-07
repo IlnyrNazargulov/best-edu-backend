@@ -65,11 +65,11 @@ public class DisciplineController {
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @RequestParam(required = false) Integer teacherId,
             @RequestParam(required = false) String teacherFullName,
-            @RequestParam(required = false) String nameDiscipline
-
+            @RequestParam(required = false) String nameDiscipline,
+            @RequestParam(required = false, defaultValue = "false") boolean isRemoved
     ) throws EntityNotFoundException {
         List<? extends DisciplineFacade> disciplines = disciplineService
-                .getDisciplines(tokenPrincipal.getAccountIdentity(), () -> teacherId, teacherFullName, nameDiscipline);
+                .getDisciplines(tokenPrincipal.getAccountIdentity(), () -> teacherId, teacherFullName, nameDiscipline, isRemoved);
         return ApiResponse.success(disciplines);
     }
 

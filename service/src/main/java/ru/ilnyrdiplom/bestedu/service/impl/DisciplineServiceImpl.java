@@ -48,14 +48,15 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
             AccountIdentity accountIdentity,
             AccountIdentity teacherIdentity,
             String teacherFullName,
-            String nameDiscipline
+            String nameDiscipline,
+            boolean isRemoved
     ) throws EntityNotFoundException {
         Account account = accountService.getAccount(accountIdentity);
         AccountTeacher teacher = null;
         if (teacherIdentity.getId() != null) {
             teacher = accountService.getAccountTeacher(teacherIdentity);
         }
-        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline);
+        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline,isRemoved);
     }
 
     @Override

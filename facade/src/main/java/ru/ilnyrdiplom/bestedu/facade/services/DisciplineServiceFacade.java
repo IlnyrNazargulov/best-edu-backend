@@ -33,7 +33,8 @@ public interface DisciplineServiceFacade {
             AccountIdentity accountIdentity,
             AccountIdentity teacherIdentity,
             String teacherFullName,
-            String nameDiscipline
+            String nameDiscipline,
+            boolean isRemoved
     ) throws EntityNotFoundException;
 
 }
