@@ -11,7 +11,7 @@ import java.util.List;
 public interface DisciplineRepository extends CrudRepository<Discipline, Integer> {
     Discipline findDisciplineByNameAndTeacherAndIsRemovedFalse(String name, AccountTeacher teacher);
 
-    Discipline findDisciplineByIdAndTeacherAndIsRemovedFalse(int id, AccountTeacher teacher);
+    Discipline findDisciplineByIdAndTeacher(int id, AccountTeacher teacher);
 
     @Query("select di from Discipline di where di.id = :id and " +
             "(di.isPublic = true or di.teacher.id = :accountId or exists (select ad from AccessDiscipline ad where ad.student.id = :accountId and ad.discipline = di))")

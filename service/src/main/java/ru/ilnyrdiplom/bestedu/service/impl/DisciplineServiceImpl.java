@@ -105,7 +105,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
     private Discipline getDisciplineByTeacher(AccountTeacher accountTeacher, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException {
         Discipline discipline = disciplineRepository
-                .findDisciplineByIdAndTeacherAndIsRemovedFalse(disciplineIdentity.getId(), accountTeacher);
+                .findDisciplineByIdAndTeacher(disciplineIdentity.getId(), accountTeacher);
         if (discipline == null) {
             throw new EntityNotFoundException(disciplineIdentity, Discipline.class);
         }
