@@ -18,7 +18,7 @@ public class Discipline implements DisciplineFacade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false, updatable = false)
     private AccountTeacher teacher;
     @Column(updatable = false, nullable = false)

@@ -14,4 +14,6 @@ public interface DisciplineFacade {
     boolean isRemoved();
 
     String getDescription();
+
+    AccountTeacherFacade getTeacher();
 }

@@ -111,22 +111,4 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         }
         return discipline;
     }
-
-    private Discipline getDisciplineByStudent(
-            AccountStudent accountStudent,
-            DisciplineIdentity disciplineIdentity
-    )
-            throws EntityNotFoundException, ImpossibleAccessDisciplineException {
-        Discipline discipline = disciplineRepository.findById(disciplineIdentity.getId())
-                .orElseThrow(() -> new EntityNotFoundException(disciplineIdentity, Discipline.class));
-        if (discipline.isPublic()) {
-            return discipline;
-        }
-        AccessDiscipline accessDiscipline = accessDisciplineRepository
-                .findAccessDisciplineByDisciplineAndStudent(discipline, accountStudent);
-        if (accessDiscipline == null) {
-            throw new ImpossibleAccessDisciplineException(disciplineIdentity, accountStudent::getId);
-        }
-        return discipline;
-    }
 }
