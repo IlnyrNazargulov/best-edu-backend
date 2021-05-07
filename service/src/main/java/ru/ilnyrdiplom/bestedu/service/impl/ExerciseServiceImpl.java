@@ -27,7 +27,6 @@ import java.util.List;
 public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final DisciplineService disciplineService;
-    @Autowired
     private ExerciseFileService exerciseFileService;
 
     @Override
@@ -128,5 +127,10 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }
         return exercise;
+    }
+
+    @Autowired
+    public void setExerciseFileService(ExerciseFileService exerciseFileService) {
+        this.exerciseFileService = exerciseFileService;
     }
 }
