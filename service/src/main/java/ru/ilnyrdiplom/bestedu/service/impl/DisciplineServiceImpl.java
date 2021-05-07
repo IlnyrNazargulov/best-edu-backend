@@ -3,16 +3,13 @@ package ru.ilnyrdiplom.bestedu.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.ilnyrdiplom.bestedu.dal.model.AccessDiscipline;
 import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
-import ru.ilnyrdiplom.bestedu.dal.model.users.AccountStudent;
 import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 import ru.ilnyrdiplom.bestedu.dal.repositories.AccessDisciplineRepository;
 import ru.ilnyrdiplom.bestedu.dal.repositories.DisciplineRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
@@ -49,14 +46,14 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
             AccountIdentity teacherIdentity,
             String teacherFullName,
             String nameDiscipline,
-            boolean isRemoved
+            boolean onlyActive
     ) throws EntityNotFoundException {
         Account account = accountService.getAccount(accountIdentity);
         AccountTeacher teacher = null;
         if (teacherIdentity.getId() != null) {
             teacher = accountService.getAccountTeacher(teacherIdentity);
         }
-        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline,isRemoved);
+        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline, onlyActive);
     }
 
     @Override

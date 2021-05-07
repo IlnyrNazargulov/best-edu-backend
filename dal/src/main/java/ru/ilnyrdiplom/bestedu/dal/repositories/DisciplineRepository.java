@@ -24,6 +24,6 @@ public interface DisciplineRepository extends CrudRepository<Discipline, Integer
             "and (:teacherFullName is null " +
             "or lower(teacher.secondName || ' ' || teacher.firstName || ' ' || teacher.patronymic) like lower(cast(concat('%', :teacherFullName, '%') as text))) " +
             "and (di.isPublic = true or teacher = :currentAccount or exists(select ad from AccessDiscipline ad where ad.discipline = di and ad.student = :currentAccount)) " +
-            "and di.isRemoved = :isRemoved")
-    List<Discipline> findDisciplines(Account currentAccount, AccountTeacher teacher, String teacherFullName, String nameDiscipline, boolean isRemoved);
+            "and (:onlyActive = false or di.isRemoved = false)")
+    List<Discipline> findDisciplines(Account currentAccount, AccountTeacher teacher, String teacherFullName, String nameDiscipline, boolean onlyActive);
 }

@@ -66,10 +66,10 @@ public class DisciplineController {
             @RequestParam(required = false) Integer teacherId,
             @RequestParam(required = false) String teacherFullName,
             @RequestParam(required = false) String nameDiscipline,
-            @RequestParam(required = false, defaultValue = "false") boolean isRemoved
+            @RequestParam(required = false, defaultValue = "true") boolean onlyActive
     ) throws EntityNotFoundException {
         List<? extends DisciplineFacade> disciplines = disciplineService
-                .getDisciplines(tokenPrincipal.getAccountIdentity(), () -> teacherId, teacherFullName, nameDiscipline, isRemoved);
+                .getDisciplines(tokenPrincipal.getAccountIdentity(), () -> teacherId, teacherFullName, nameDiscipline, onlyActive);
         return ApiResponse.success(disciplines);
     }
 
