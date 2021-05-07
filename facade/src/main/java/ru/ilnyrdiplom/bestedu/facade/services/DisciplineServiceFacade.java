@@ -19,7 +19,8 @@ public interface DisciplineServiceFacade {
             DisciplineIdentity disciplineIdentity,
             String name,
             boolean isPublic,
-            String description
+            String description,
+            boolean isRemoved
     )
             throws EntityNotFoundException, DisciplineAlreadyExistsException;
 

@@ -54,7 +54,8 @@ public class DisciplineController {
                         () -> disciplineId,
                         disciplineRequest.getName(),
                         disciplineRequest.isPublic(),
-                        disciplineRequest.getDescription()
+                        disciplineRequest.getDescription(),
+                        disciplineRequest.isRemoved()
                 );
         return ApiResponse.success(discipline);
     }
