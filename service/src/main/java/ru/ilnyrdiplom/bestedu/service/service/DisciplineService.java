@@ -8,6 +8,6 @@ import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 
 public interface DisciplineService {
-    Discipline getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+    Discipline getAvailableDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
 }

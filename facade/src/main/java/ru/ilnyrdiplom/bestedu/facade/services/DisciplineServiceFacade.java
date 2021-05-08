@@ -27,8 +27,11 @@ public interface DisciplineServiceFacade {
     DisciplineFacade deleteDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException;
 
-    DisciplineFacade getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+    DisciplineFacade getAvailableDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException, ImpossibleAccessDisciplineException, WrongAccountTypeException;
+
+    DisciplineFacade getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException;
 
     List<? extends DisciplineFacade> getDisciplines(
             AccountIdentity accountIdentity,

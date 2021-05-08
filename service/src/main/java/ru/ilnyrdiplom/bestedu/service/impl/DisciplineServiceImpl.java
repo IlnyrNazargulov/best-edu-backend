@@ -10,6 +10,7 @@ import ru.ilnyrdiplom.bestedu.dal.repositories.AccessDisciplineRepository;
 import ru.ilnyrdiplom.bestedu.dal.repositories.DisciplineRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
+import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
@@ -53,11 +54,11 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         if (teacherIdentity.getId() != null) {
             teacher = accountService.getAccountTeacher(teacherIdentity);
         }
-        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline, onlyVisible);
+        return disciplineRepository.findDisciplines(account.getId(), teacher, teacherFullName, nameDiscipline, onlyVisible);
     }
 
     @Override
-    public Discipline getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+    public Discipline getAvailableDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException {
         Discipline availableDiscipline = disciplineRepository
                 .findAvailableDiscipline(disciplineIdentity.getId(), accountIdentity.getId());
@@ -65,6 +66,19 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
             throw new EntityNotFoundException(disciplineIdentity, Discipline.class);
         }
         return availableDiscipline;
+    }
+
+    @Override
+    public Discipline getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
+            throws EntityNotFoundException, ImpossibleAccessDisciplineException {
+        Account account = accountService.getAccount(accountIdentity);
+        Discipline discipline = disciplineRepository
+                .findById(disciplineIdentity.getId()).orElseThrow(() -> new EntityNotFoundException(disciplineIdentity, Discipline.class));
+        Discipline checkAccess = disciplineRepository.checkAccess(discipline, account.getId());
+        if (checkAccess == null) {
+            throw new ImpossibleAccessDisciplineException(disciplineIdentity, accountIdentity);
+        }
+        return discipline;
     }
 
     @Override
