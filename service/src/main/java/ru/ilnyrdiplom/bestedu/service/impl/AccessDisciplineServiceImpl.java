@@ -62,7 +62,7 @@ public class AccessDisciplineServiceImpl implements AccessDisciplineServiceFacad
         if (existAwaitAccessDiscipline == null) {
             throw new EntityNotFoundException(accessDisciplineIdentity, AccessDiscipline.class);
         }
-        if (existAwaitAccessDiscipline.getStatus() == AccessDisciplineStatus.REJECTED) {
+        if (existAwaitAccessDiscipline.getStatus() == AccessDisciplineStatus.ACCEPTED) {
             throw new WrongAccessDisciplineStatusException();
         }
         existAwaitAccessDiscipline.setStatus(AccessDisciplineStatus.ACCEPTED);
