@@ -33,6 +33,9 @@ public class AccessDisciplineServiceImpl implements AccessDisciplineServiceFacad
     public AccessDiscipline createRequestAccessDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity) throws EntityNotFoundException, WrongAccessDisciplineStatusException {
         Account account = accountService.getAccount(accountIdentity);
         Discipline discipline = disciplineService.getDiscipline(accountIdentity, disciplineIdentity);
+        if (discipline.isPublic()) {
+            return null;
+        }
         AccessDiscipline existAwaitAccessDiscipline = accessDisciplineRepository.findAccessDiscipline(discipline, account);
         if (existAwaitAccessDiscipline != null) {
             if (existAwaitAccessDiscipline.getStatus() == AccessDisciplineStatus.ACCEPTED) {
@@ -92,7 +95,10 @@ public class AccessDisciplineServiceImpl implements AccessDisciplineServiceFacad
             AccessDisciplineStatus status
     ) throws EntityNotFoundException {
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
-        Discipline disciplineByTeacher = disciplineService.getDisciplineByTeacher(accountTeacher, disciplineIdentity);
-        return accessDisciplineRepository.findAccessDisciplines(disciplineByTeacher, status);
+        Discipline disciplineByTeacher = null;
+        if (disciplineIdentity.getId() != null) {
+            disciplineByTeacher = disciplineService.getDisciplineByTeacher(accountTeacher, disciplineIdentity);
+        }
+        return accessDisciplineRepository.findAccessDisciplines(accountTeacher, disciplineByTeacher, status);
     }
 }

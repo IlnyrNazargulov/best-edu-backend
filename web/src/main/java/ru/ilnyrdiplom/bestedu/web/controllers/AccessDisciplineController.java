@@ -18,14 +18,14 @@ import ru.ilnyrdiplom.bestedu.web.model.TokenPrincipal;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/disciplines/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping( produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class AccessDisciplineController {
 
     private final AccessDisciplineServiceFacade accessDisciplineService;
 
     @Secured({Role.TEACHER, Role.STUDENT})
-    @PostMapping("/{disciplineId}/access-discipline/")
+    @PostMapping("/disciplines/{disciplineId}/access-discipline/")
     public ResponseEntity<ApiResponse<AccessDisciplineFacade>> createRequestAccessDiscipline(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @PathVariable int disciplineId
@@ -36,7 +36,7 @@ public class AccessDisciplineController {
     }
 
     @Secured(Role.TEACHER)
-    @PutMapping("/{disciplineId}/access-discipline/{accessDisciplineId}/accept/")
+    @PutMapping("/disciplines/{disciplineId}/access-discipline/{accessDisciplineId}/accept/")
     public ResponseEntity<ApiResponse<AccessDisciplineFacade>> acceptAccessDiscipline(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
                                                                                       @PathVariable int disciplineId,
                                                                                       @PathVariable int accessDisciplineId
@@ -47,7 +47,7 @@ public class AccessDisciplineController {
     }
 
     @Secured(Role.TEACHER)
-    @PutMapping("/{disciplineId}/access-discipline/{accessDisciplineId}/reject/")
+    @PutMapping("/disciplines/{disciplineId}/access-discipline/{accessDisciplineId}/reject/")
     public ResponseEntity<ApiResponse<AccessDisciplineFacade>> rejectAccessDiscipline(@AuthenticationPrincipal TokenPrincipal tokenPrincipal,
                                                                                       @PathVariable int disciplineId,
                                                                                       @PathVariable int accessDisciplineId
@@ -58,10 +58,10 @@ public class AccessDisciplineController {
     }
 
     @Secured({Role.TEACHER})
-    @GetMapping("/{disciplineId}/access-discipline/")
-    public ResponseEntity<ApiResponse<List<? extends AccessDisciplineFacade>>> getDisciplines(
+    @GetMapping("/access-discipline/")
+    public ResponseEntity<ApiResponse<List<? extends AccessDisciplineFacade>>> getAllByTeacher(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
-            @PathVariable int disciplineId,
+            @RequestParam(required = false) Integer disciplineId,
             @RequestParam(required = false) AccessDisciplineStatus status
     ) throws EntityNotFoundException {
         List<? extends AccessDisciplineFacade> accessDisciplines = accessDisciplineService

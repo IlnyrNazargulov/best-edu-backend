@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import ru.ilnyrdiplom.bestedu.dal.model.AccessDiscipline;
 import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
+import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.AccessDisciplineStatus;
 
 import java.util.List;
@@ -16,7 +17,9 @@ public interface AccessDisciplineRepository extends CrudRepository<AccessDiscipl
     @Query("from AccessDiscipline ad where ad.discipline = :discipline and ad.id = :id")
     AccessDiscipline findAccessDiscipline(Discipline discipline, int id);
 
-    @Query("from AccessDiscipline ad where ad.discipline = :discipline and " +
+    @Query("from AccessDiscipline ad " +
+            "inner join Discipline di on ad.discipline = di and di.teacher = :teacher " +
+            "where (:discipline is null or ad.discipline = :discipline) and " +
             "(:status is null or ad.status = :status)")
-    List<AccessDiscipline> findAccessDisciplines(Discipline discipline, AccessDisciplineStatus status);
+    List<AccessDiscipline> findAccessDisciplines(AccountTeacher teacher, Discipline discipline, AccessDisciplineStatus status);
 }
