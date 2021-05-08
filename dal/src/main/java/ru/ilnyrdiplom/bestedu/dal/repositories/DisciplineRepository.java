@@ -14,11 +14,13 @@ public interface DisciplineRepository extends CrudRepository<Discipline, Integer
     Discipline findDisciplineByIdAndTeacher(int id, AccountTeacher teacher);
 
     @Query("select di from Discipline di where di.id = :id and " +
-            "(di.isPublic = true or di.teacher.id = :accountId or exists (select ad from AccessDiscipline ad where ad.student.id = :accountId and ad.discipline = di))")
+            "(di.isPublic = true or di.teacher.id = :accountId or " +
+            "exists (select ad from AccessDiscipline ad where ad.student.id = :accountId and ad.discipline = di and ad.status = 'ACCEPTED'))")
     Discipline findAvailableDiscipline(int id, int accountId);
 
     @Query("select di from Discipline di where di = :discipline and " +
-            "(di.isPublic = true or di.teacher.id = :accountId or exists (select ad from AccessDiscipline ad where ad.student.id = :accountId and ad.discipline = di))")
+            "(di.isPublic = true or di.teacher.id = :accountId or " +
+            "exists (select ad from AccessDiscipline ad where ad.student.id = :accountId and ad.discipline = di and ad.status = 'ACCEPTED'))")
     Discipline checkAccess(Discipline discipline, int accountId);
 
 
