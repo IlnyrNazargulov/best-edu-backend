@@ -68,7 +68,7 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
                 discipline,
                 exerciseRequest.getName()
         );
-        if (existExerciseWithNewName != null) {
+        if (existExerciseWithNewName != null && !existExerciseWithNewName.getId().equals(exerciseIdentity.getId())) {
             throw new ExerciseAlreadyExistsException(exerciseRequest.getName(), disciplineIdentity);
         }
         Exercise existExercise = exerciseRepository.findByDisciplineAndIdAndIsRemovedFalse(discipline, exerciseIdentity.getId());

@@ -9,6 +9,7 @@ import ru.ilnyrdiplom.bestedu.dal.model.Exercise;
 import java.util.List;
 
 public interface ExerciseRepository extends CrudRepository<Exercise, Integer> {
+    @Query("from Exercise ex where ex.discipline = :discipline and ex.name = :name and ex.isRemoved = false")
     Exercise findByDisciplineAndNameAndIsRemovedFalse(Discipline discipline, String name);
 
     Exercise findByDisciplineAndIdAndIsRemovedFalse(Discipline discipline, int id);
