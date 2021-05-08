@@ -18,4 +18,6 @@ public interface AccountFacade {
     Instant getCreatedAt();
 
     String getLogin();
+
+    Long getCountDisciplines();
 }

@@ -1,6 +1,7 @@
 package ru.ilnyrdiplom.bestedu.dal.model.users;
 
 import lombok.*;
+import org.hibernate.annotations.Formula;
 import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 
 import javax.persistence.*;
@@ -32,6 +33,9 @@ public abstract class Account implements AccountFacade {
     private String firstName;
     @Setter
     private String patronymic;
+
+    @Formula("(select count(di.id) from Discipline di where di.teacher_id = id)")
+    private Long countDisciplines;
 
     public Account(Instant createdAt, String login, String passwordHash, String secondName, String firstName, String patronymic) {
         this.createdAt = createdAt;
