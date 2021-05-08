@@ -55,7 +55,7 @@ public class DisciplineController {
                         disciplineRequest.getName(),
                         disciplineRequest.isPublic(),
                         disciplineRequest.getDescription(),
-                        disciplineRequest.isRemoved()
+                        disciplineRequest.isVisible()
                 );
         return ApiResponse.success(discipline);
     }
@@ -67,10 +67,10 @@ public class DisciplineController {
             @RequestParam(required = false) Integer teacherId,
             @RequestParam(required = false) String teacherFullName,
             @RequestParam(required = false) String nameDiscipline,
-            @RequestParam(required = false, defaultValue = "true") boolean onlyActive
+            @RequestParam(required = false, defaultValue = "true") boolean onlyVisible
     ) throws EntityNotFoundException {
         List<? extends DisciplineFacade> disciplines = disciplineService
-                .getDisciplines(tokenPrincipal.getAccountIdentity(), () -> teacherId, teacherFullName, nameDiscipline, onlyActive);
+                .getDisciplines(tokenPrincipal.getAccountIdentity(), () -> teacherId, teacherFullName, nameDiscipline, onlyVisible);
         return ApiResponse.success(disciplines);
     }
 

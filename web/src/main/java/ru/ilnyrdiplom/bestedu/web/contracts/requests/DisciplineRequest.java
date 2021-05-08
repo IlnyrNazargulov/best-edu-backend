@@ -13,6 +13,6 @@ public class DisciplineRequest {
     private boolean isPublic;
     @Length(max = 500)
     private String description;
-    @JsonProperty("isRemoved")
-    private boolean isRemoved;
+    @JsonProperty("isVisible")
+    private boolean isVisible;
 }

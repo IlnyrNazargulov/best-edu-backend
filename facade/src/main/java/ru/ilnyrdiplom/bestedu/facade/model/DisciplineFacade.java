@@ -11,6 +11,8 @@ public interface DisciplineFacade {
 
     boolean isPublic();
 
+    boolean isVisible();
+
     boolean isRemoved();
 
     String getDescription();

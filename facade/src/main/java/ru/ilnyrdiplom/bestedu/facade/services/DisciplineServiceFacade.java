@@ -20,7 +20,7 @@ public interface DisciplineServiceFacade {
             String name,
             boolean isPublic,
             String description,
-            boolean isRemoved
+            boolean isVisible
     )
             throws EntityNotFoundException, DisciplineAlreadyExistsException;
 
@@ -35,7 +35,7 @@ public interface DisciplineServiceFacade {
             AccountIdentity teacherIdentity,
             String teacherFullName,
             String nameDiscipline,
-            boolean onlyActive
+            boolean onlyVisible
     ) throws EntityNotFoundException;
 
 }

@@ -11,4 +11,7 @@ public interface DisciplineMixin {
 
     @JsonGetter("isRemoved")
     boolean isRemoved();
+
+    @JsonGetter("isVisible")
+    boolean isVisible();
 }

@@ -46,14 +46,14 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
             AccountIdentity teacherIdentity,
             String teacherFullName,
             String nameDiscipline,
-            boolean onlyActive
+            boolean onlyVisible
     ) throws EntityNotFoundException {
         Account account = accountService.getAccount(accountIdentity);
         AccountTeacher teacher = null;
         if (teacherIdentity.getId() != null) {
             teacher = accountService.getAccountTeacher(teacherIdentity);
         }
-        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline, onlyActive);
+        return disciplineRepository.findDisciplines(account, teacher, teacherFullName, nameDiscipline, onlyVisible);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
             String newName,
             boolean isPublic,
             String description,
-            boolean isRemoved
+            boolean isVisible
     )
             throws EntityNotFoundException, DisciplineAlreadyExistsException {
         AccountTeacher accountTeacher = accountService.getAccountTeacher(accountIdentity);
@@ -88,7 +88,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         discipline.setName(newName);
         discipline.setPublic(isPublic);
         discipline.setDescription(description);
-        discipline.setRemoved(isRemoved);
+        discipline.setVisible(isVisible);
         return discipline;
     }
 
