@@ -8,4 +8,6 @@ public interface AccessDisciplineFacade {
     AccountFacade getStudent();
 
     AccessDisciplineStatus getStatus();
+
+    DisciplineFacade getDiscipline();
 }
