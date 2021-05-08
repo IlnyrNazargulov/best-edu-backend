@@ -14,4 +14,7 @@ public interface DisciplineMixin {
 
     @JsonGetter("isVisible")
     boolean isVisible();
+
+    @JsonGetter("isAccess")
+    boolean isAccess();
 }

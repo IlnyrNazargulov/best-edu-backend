@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.WrongAccountTypeException;
 import ru.ilnyrdiplom.bestedu.facade.model.DisciplineFacade;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
@@ -79,7 +78,7 @@ public class DisciplineController {
     public ResponseEntity<ApiResponse<DisciplineFacade>> getDiscipline(
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @PathVariable int disciplineId
-    ) throws EntityNotFoundException, WrongAccountTypeException, ImpossibleAccessDisciplineException {
+    ) throws EntityNotFoundException, ImpossibleAccessDisciplineException {
         DisciplineFacade discipline = disciplineService
                 .getDiscipline(tokenPrincipal.getAccountIdentity(), () -> disciplineId);
         return ApiResponse.success(discipline);

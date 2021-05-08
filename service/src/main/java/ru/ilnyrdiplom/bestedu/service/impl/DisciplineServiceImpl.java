@@ -75,9 +75,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         Discipline discipline = disciplineRepository
                 .findById(disciplineIdentity.getId()).orElseThrow(() -> new EntityNotFoundException(disciplineIdentity, Discipline.class));
         Discipline checkAccess = disciplineRepository.checkAccess(discipline, account.getId());
-        if (checkAccess == null) {
-            throw new ImpossibleAccessDisciplineException(disciplineIdentity, accountIdentity);
-        }
+        discipline.setAccess(checkAccess != null);
         return discipline;
     }
 

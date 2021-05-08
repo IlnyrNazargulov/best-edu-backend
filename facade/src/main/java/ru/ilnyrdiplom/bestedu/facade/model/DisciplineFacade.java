@@ -18,4 +18,6 @@ public interface DisciplineFacade {
     String getDescription();
 
     AccountTeacherFacade getTeacher();
+
+    boolean isAccess();
 }

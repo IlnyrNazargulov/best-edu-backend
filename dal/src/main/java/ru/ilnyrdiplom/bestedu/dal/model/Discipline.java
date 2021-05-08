@@ -35,6 +35,9 @@ public class Discipline implements DisciplineFacade {
     @Setter
     @Column(nullable = false)
     private String description;
+    @Transient
+    @Setter
+    private boolean isAccess;
 
     public Discipline(AccountTeacher teacher, Instant createdAt, String name, boolean isPublic, String description) {
         this.teacher = teacher;
