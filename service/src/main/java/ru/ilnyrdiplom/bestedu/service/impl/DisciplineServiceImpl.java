@@ -6,11 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ilnyrdiplom.bestedu.dal.model.Discipline;
 import ru.ilnyrdiplom.bestedu.dal.model.users.Account;
 import ru.ilnyrdiplom.bestedu.dal.model.users.AccountTeacher;
-import ru.ilnyrdiplom.bestedu.dal.repositories.AccessDisciplineRepository;
 import ru.ilnyrdiplom.bestedu.dal.repositories.DisciplineRepository;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.DisciplineAlreadyExistsException;
 import ru.ilnyrdiplom.bestedu.facade.exceptions.EntityNotFoundException;
-import ru.ilnyrdiplom.bestedu.facade.exceptions.ImpossibleAccessDisciplineException;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.AccountIdentity;
 import ru.ilnyrdiplom.bestedu.facade.model.identities.DisciplineIdentity;
 import ru.ilnyrdiplom.bestedu.facade.services.DisciplineServiceFacade;
@@ -25,7 +23,6 @@ import java.util.List;
 public class DisciplineServiceImpl implements DisciplineServiceFacade, DisciplineService {
     private final AccountService accountService;
     private final DisciplineRepository disciplineRepository;
-    private final AccessDisciplineRepository accessDisciplineRepository;
 
     @Override
     public Discipline createDiscipline(AccountIdentity accountIdentity, String name, boolean isPublic, String description)
@@ -70,7 +67,7 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
 
     @Override
     public Discipline getDiscipline(AccountIdentity accountIdentity, DisciplineIdentity disciplineIdentity)
-            throws EntityNotFoundException, ImpossibleAccessDisciplineException {
+            throws EntityNotFoundException {
         Account account = accountService.getAccount(accountIdentity);
         Discipline discipline = disciplineRepository
                 .findById(disciplineIdentity.getId()).orElseThrow(() -> new EntityNotFoundException(disciplineIdentity, Discipline.class));
@@ -114,7 +111,8 @@ public class DisciplineServiceImpl implements DisciplineServiceFacade, Disciplin
         return discipline;
     }
 
-    private Discipline getDisciplineByTeacher(AccountTeacher accountTeacher, DisciplineIdentity disciplineIdentity)
+    @Override
+    public Discipline getDisciplineByTeacher(AccountTeacher accountTeacher, DisciplineIdentity disciplineIdentity)
             throws EntityNotFoundException {
         Discipline discipline = disciplineRepository
                 .findDisciplineByIdAndTeacher(disciplineIdentity.getId(), accountTeacher);

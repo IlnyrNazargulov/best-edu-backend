@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import ru.ilnyrdiplom.bestedu.facade.model.*;
 import ru.ilnyrdiplom.bestedu.web.mixins.*;
 
@@ -18,7 +17,7 @@ import ru.ilnyrdiplom.bestedu.web.mixins.*;
 @PropertySource({"classpath:security.properties", "classpath:web.properties"})
 @ConfigurationPropertiesScan
 public class BestEduApplication {
-    
+
     public static void main(String[] args) {
         SpringApplication.run(BestEduApplication.class, args);
     }
@@ -34,6 +33,7 @@ public class BestEduApplication {
             jacksonObjectMapperBuilder.mixIn(FileFacade.class, FileMixin.class);
             jacksonObjectMapperBuilder.mixIn(NotificationFacade.class, NotificationMixin.class);
             jacksonObjectMapperBuilder.mixIn(ExerciseWithoutContentFacade.class, ExerciseWithoutContentMixin.class);
+            jacksonObjectMapperBuilder.mixIn(AccessDisciplineFacade.class, AccessDisciplineMixin.class);
 
             jacksonObjectMapperBuilder.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             jacksonObjectMapperBuilder.featuresToEnable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
