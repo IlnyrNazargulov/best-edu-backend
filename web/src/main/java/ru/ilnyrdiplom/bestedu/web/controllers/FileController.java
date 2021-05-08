@@ -36,7 +36,7 @@ public class FileController {
             @AuthenticationPrincipal TokenPrincipal tokenPrincipal,
             @PathVariable int disciplineId,
             @PathVariable int exerciseId,
-            @Valid @ValidExerciseFileTypeForCreate(anyOf = {ExerciseFileType.CODE}) @PathVariable ExerciseFileType exerciseFileType,
+            @Valid @ValidExerciseFileTypeForCreate(anyOf = {ExerciseFileType.CODE, ExerciseFileType.DOCUMENT}) @PathVariable ExerciseFileType exerciseFileType,
             final @RequestParam("file") MultipartFile file
     ) throws ImpossibleAccessDisciplineException, FileSizeExceededException, FileUploadException, WrongAccountTypeException {
         ExerciseFileFacade exerciseFile;

@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface ExerciseFileRepository extends CrudRepository<ExerciseFile, UUID> {
     @Query("select ef from ExerciseFile ef " +
             "join File f on ef.file = f and f.isRemoved = false " +
-            "where ef.exercise = :exercise and ef.exerciseFileType <> 'CONTENT'")
+            "where ef.exercise = :exercise and ef.exerciseFileType <> 'CONTENT' and ef.isRemoved = false")
     List<ExerciseFile> findExerciseFiles(Exercise exercise);
 
     @Query("select ef from ExerciseFile ef " +
