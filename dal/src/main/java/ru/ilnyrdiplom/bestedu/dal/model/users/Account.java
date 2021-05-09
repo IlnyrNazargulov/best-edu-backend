@@ -40,7 +40,7 @@ public abstract class Account implements AccountFacade {
     private String rank;
     @Setter
     private String information;
-    @Formula("(select count(di.id) from Discipline di where di.teacher_id = id and di.is_removed = false)")
+    @Formula("(select count(di.id) from Discipline di where di.teacher_id = id and di.is_removed = false and di.is_visible = true)")
     private Long countDisciplines;
 
     @Setter
