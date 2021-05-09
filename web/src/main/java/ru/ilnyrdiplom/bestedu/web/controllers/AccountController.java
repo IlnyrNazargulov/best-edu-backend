@@ -149,4 +149,14 @@ public class AccountController {
                 .changePassword(tokenPrincipal.getAccountIdentity(), changePasswordRequest.getPassword());
         return ApiResponse.success(account);
     }
+
+    @Secured({Role.TEACHER, Role.STUDENT})
+    @DeleteMapping(value = "/current/")
+    public ResponseEntity<ApiResponse<AccountFacade>> deleteAccount(
+            @AuthenticationPrincipal TokenPrincipal tokenPrincipal
+    )
+            throws EntityNotFoundException {
+        AccountFacade account = accountService.deleteAccount(tokenPrincipal.getAccountIdentity());
+        return ApiResponse.success(account);
+    }
 }

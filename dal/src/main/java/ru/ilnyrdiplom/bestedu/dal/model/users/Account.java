@@ -43,6 +43,9 @@ public abstract class Account implements AccountFacade {
     @Formula("(select count(di.id) from Discipline di where di.teacher_id = id and di.is_removed = false)")
     private Long countDisciplines;
 
+    @Setter
+    private boolean isRemoved;
+
     public Account(Instant createdAt, String login, String passwordHash, String secondName, String firstName, String patronymic) {
         this.createdAt = createdAt;
         this.login = login;

@@ -34,6 +34,14 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
     private final RequestCodeService requestCodeService;
 
     @Override
+    @Transactional
+    public Account deleteAccount(AccountIdentity accountIdentity) throws EntityNotFoundException {
+        Account account = getAccount(accountIdentity);
+        account.setRemoved(true);
+        return account;
+    }
+
+    @Override
     public Account getByCredentials(String email, String plainPassword) throws WrongCredentialsException {
         Account existAccount = accountRepository.findAccountByLogin(email);
         if (existAccount == null) {

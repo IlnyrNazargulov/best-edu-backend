@@ -1,0 +1,5 @@
+ALTER TABLE account
+    ADD COLUMN is_removed BOOLEAN DEFAULT FALSE;
+
+ALTER TABLE account
+    ALTER COLUMN is_removed DROP DEFAULT;

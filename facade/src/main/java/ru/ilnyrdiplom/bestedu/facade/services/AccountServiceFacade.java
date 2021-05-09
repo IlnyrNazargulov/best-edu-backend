@@ -35,4 +35,5 @@ public interface AccountServiceFacade {
 
     List<? extends AccountFacade> getAccountTeachers(String fullName, Pageable pageable);
 
+    AccountFacade deleteAccount(AccountIdentity accountIdentity) throws EntityNotFoundException;
 }
