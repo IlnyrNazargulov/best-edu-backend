@@ -6,6 +6,7 @@ import ru.ilnyrdiplom.bestedu.facade.model.AccountFacade;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -33,7 +34,12 @@ public abstract class Account implements AccountFacade {
     private String firstName;
     @Setter
     private String patronymic;
-
+    @Setter
+    private LocalDate birthdate;
+    @Setter
+    private String rank;
+    @Setter
+    private String information;
     @Formula("(select count(di.id) from Discipline di where di.teacher_id = id)")
     private Long countDisciplines;
 

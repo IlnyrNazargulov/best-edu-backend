@@ -3,6 +3,7 @@ package ru.ilnyrdiplom.bestedu.facade.model;
 import ru.ilnyrdiplom.bestedu.facade.model.enums.Role;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 public interface AccountFacade {
     Integer getId();
@@ -20,4 +21,10 @@ public interface AccountFacade {
     String getLogin();
 
     Long getCountDisciplines();
+
+    LocalDate getBirthdate();
+
+    String getRank();
+
+    String getInformation();
 }

@@ -157,6 +157,9 @@ public class AccountServiceImpl implements AccountServiceFacade, AccountService 
         existAccount.setSecondName(changeUserInfoRequest.getSecondName());
         existAccount.setPatronymic(changeUserInfoRequest.getPatronymic());
         existAccount.setFirstName(changeUserInfoRequest.getFirstName());
+        existAccount.setBirthdate(changeUserInfoRequest.getBirthdate());
+        existAccount.setRank(changeUserInfoRequest.getRank());
+        existAccount.setInformation(changeUserInfoRequest.getInformation());
         return existAccount;
     }
 }
