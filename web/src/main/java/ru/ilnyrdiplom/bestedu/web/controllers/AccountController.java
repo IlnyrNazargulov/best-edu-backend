@@ -85,7 +85,7 @@ public class AccountController {
     @PostMapping(value = "/teachers/register/")
     public ResponseEntity<ApiResponse<AccountWithTokenResponse>> registerTeacher(
             @AuthenticationPrincipal String email,
-            @Validated @RequestBody TeacherRegisterRequest teacherRegisterRequest
+            @Validated @RequestBody RegisterRequest teacherRegisterRequest
     )
             throws AccountLoginException {
         AccountTeacherFacade account = accountService.createAccountTeacher(teacherRegisterRequest, email);
@@ -95,10 +95,11 @@ public class AccountController {
 
     @PostMapping(value = "/students/register/")
     public ResponseEntity<ApiResponse<AccountWithTokenResponse>> registerStudent(
+            @AuthenticationPrincipal String email,
             @Validated @RequestBody RegisterRequest registerRequest
     )
             throws AccountLoginException {
-        AccountStudentFacade account = accountService.createAccountStudent(registerRequest);
+        AccountStudentFacade account = accountService.createAccountStudent(registerRequest, email);
         OAuth2AccessToken accessTokenByAccount = securityTokenService.createAccessTokenByAccount(account);
         return ApiResponse.success(new AccountWithTokenResponse(accessTokenByAccount, account));
     }

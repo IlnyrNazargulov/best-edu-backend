@@ -18,7 +18,7 @@ public interface AccountServiceFacade {
 
     AccountTeacherFacade createAccountTeacher(RegisterRequestFacade registerRequestFacade, String email) throws AccountLoginException;
 
-    AccountStudentFacade createAccountStudent(RegisterRequestFacade registerRequestFacade) throws AccountLoginException;
+    AccountStudentFacade createAccountStudent(RegisterRequestFacade registerRequestFacade, String email) throws AccountLoginException;
 
     RequestCodeStatusFacade registerRequestCode(String email);
 
