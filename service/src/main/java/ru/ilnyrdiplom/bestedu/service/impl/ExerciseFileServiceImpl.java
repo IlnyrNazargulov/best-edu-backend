@@ -1,6 +1,7 @@
 package ru.ilnyrdiplom.bestedu.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ilnyrdiplom.bestedu.dal.model.Exercise;
 import ru.ilnyrdiplom.bestedu.dal.model.ExerciseFile;
@@ -28,7 +29,7 @@ public class ExerciseFileServiceImpl implements ExerciseFileService, ExerciseFil
     private final ExerciseFileProperties exerciseFileProperties;
 
     private final ExerciseFileRepository exerciseFileRepository;
-    private final ExerciseService exerciseService;
+    private ExerciseService exerciseService;
     private final FileUploadService fileUploadService;
 
     @Override
@@ -84,5 +85,10 @@ public class ExerciseFileServiceImpl implements ExerciseFileService, ExerciseFil
     public ExerciseFile createContentExerciseFile(AccountTeacher teacher, Exercise exercise) throws FileUploadException {
         InputStream inputStream = new ByteArrayInputStream(exerciseFileProperties.getEmptyFileText().getBytes());
         return fileUploadService.createEmptyExerciseContentFile(inputStream, teacher, exercise);
+    }
+
+    @Autowired
+    public void setExerciseService(ExerciseService exerciseService) {
+        this.exerciseService = exerciseService;
     }
 }
