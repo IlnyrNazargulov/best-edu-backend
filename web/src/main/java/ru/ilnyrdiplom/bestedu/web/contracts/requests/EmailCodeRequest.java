@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class EmailCodeRequest {
     @Email
+    @NotBlank
     private String email;
     @NotBlank
     private String code;
