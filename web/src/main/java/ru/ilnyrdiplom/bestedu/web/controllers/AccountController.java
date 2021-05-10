@@ -104,6 +104,7 @@ public class AccountController {
         return ApiResponse.success(new AccountWithTokenResponse(accessTokenByAccount, account));
     }
 
+    @Secured(Role.ANONYMOUS)
     @PostMapping("/current/refresh/")
     public ResponseEntity<ApiResponse<OAuth2AccessToken>> refreshToken(
             @Validated @RequestBody RefreshTokenRequest refreshTokenRequest
