@@ -31,7 +31,8 @@ public interface DisciplineRepository extends CrudRepository<Discipline, Integer
             "(:teacherFullName is null or " +
             "lower(teacher.secondName || ' ' || teacher.firstName || ' ' || teacher.patronymic) like lower(cast(concat('%', :teacherFullName, '%') as text))) and " +
             "(:onlyVisible = false or di.isVisible = true) and " +
-            "di.isRemoved = false " +
+            "di.isRemoved = false and " +
+            "teacher.isRemoved = false " +
             "order by di.isRemoved, di.id")
     List<Discipline> findDisciplines(AccountTeacher teacher, String teacherFullName, String nameDiscipline, boolean onlyVisible);
 }
