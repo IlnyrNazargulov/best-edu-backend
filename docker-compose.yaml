@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  application:
+    image: 'app.jar'
+    build:
+      context: .
+    container_name: app
+    ports:
+      - "8093:8093"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bestedu
+      - SPRING_DATASOURCE_USERNAME=bestedu
+      - SPRING_DATASOURCE_PASSWORD=bestedu
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  postgres:
+    container_name: postgres
+    image: postgres:13.3
+    environment:
+      - POSTGRES_DB=bestedu
+      - POSTGRES_USER=bestedu
+      - POSTGRES_PASSWORD=bestedu
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
