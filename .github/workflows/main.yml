@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Copy to builds path.
-        run: mv . /home/ilnur/projects/best-edu-backend
+        run: mv . /home/ilnur/projects/best-edu-backend/
       - name: Docker application init.
         run: make init
