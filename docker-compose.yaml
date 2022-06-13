@@ -1,9 +1,8 @@
-version: "3.9"
+version: "3.3"
 services:
   application:
     build:
       context: .
-    container_name: application
     ports:
       - '8093:8093'
     depends_on:
