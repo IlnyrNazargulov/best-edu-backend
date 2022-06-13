@@ -1,7 +1,9 @@
-FROM maven:3.8.5-openjdk-11 AS maven_build
-RUN mvn package
+FROM maven:3.5.2-jdk-8-alpine AS MAVEN
+COPY . /tmp/
+WORKDIR /tmp/
+RUN mvn clean install -Pdocker
+
+FROM openjdk:8-jdk-alpine
+COPY --from=MAVEN /tmp/web/target/*.jar app.jar
 EXPOSE 8093
-FROM openjdk
-ARG JAR_FILE=web/target/*.jar
-COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
