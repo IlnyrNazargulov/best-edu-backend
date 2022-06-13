@@ -9,7 +9,5 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - name: Build jar archive.
-        run: mvn -B clean install
       - name: Current directory.
         run: pwd
