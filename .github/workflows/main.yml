@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Remove old build path.
-        run: sudo rm -rf /home/ilnur/projects/best-edu/backend/*
+        run: rm -rf /home/ilnur/projects/best-edu/backend/*
       - name: Copy to builds path.
         run: mv ./* /home/ilnur/projects/best-edu/backend
       - name: Docker application init.
