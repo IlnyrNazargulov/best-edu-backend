@@ -1,7 +1,7 @@
 package ru.ilnyrdiplom.bestedu.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ilnyrdiplom.bestedu.dal.dto.ExerciseWithoutContent;
@@ -27,7 +27,8 @@ import java.util.List;
 public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final DisciplineService disciplineService;
-    private ExerciseFileService exerciseFileService;
+    @Lazy
+    private final ExerciseFileService exerciseFileService;
 
     @Override
     @Transactional
@@ -127,10 +128,5 @@ public class ExerciseServiceImpl implements ExerciseServiceFacade, ExerciseServi
             throw new EntityNotFoundException(exerciseIdentity, Exercise.class);
         }
         return exercise;
-    }
-
-    @Autowired
-    public void setExerciseFileService(ExerciseFileService exerciseFileService) {
-        this.exerciseFileService = exerciseFileService;
     }
 }
